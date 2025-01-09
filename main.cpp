@@ -242,7 +242,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	InitBullet();
 
 	// ライトを有効化
-	SetLightEnable(FALSE);
+	//SetLightEnable(FALSE);
 
 	// 背面ポリゴンをカリング
 	SetCullingMode(CULL_MODE_BACK);

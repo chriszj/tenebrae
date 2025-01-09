@@ -101,28 +101,36 @@ void UninitPlayer(void)
 void UpdatePlayer(void)
 {
 	CAMERA* cam = GetCamera();
-
+	g_Player.dir = 0;
 	// 移動させちゃう
+	
+
 	if (GetKeyboardPress(DIK_A))
 	{	// 左へ移動
 		g_Player.spd = VALUE_MOVE;
-		g_Player.dir = -XM_PI / 2;
+		//g_Player.dir -= XM_PI / 2;
+		g_Player.movY = -1;
 	}
 	if (GetKeyboardPress(DIK_D))
 	{	// 右へ移動
 		g_Player.spd = VALUE_MOVE;
-		g_Player.dir = XM_PI / 2;
+		//g_Player.dir += XM_PI / 4;
+		g_Player.movY = 1;
 	}
 	if (GetKeyboardPress(DIK_W))
 	{	// 上へ移動
 		g_Player.spd = VALUE_MOVE;
-		g_Player.dir = 0.0f;
+		//g_Player.dir -= XM_PI / 2;
+		g_Player.movX = 1;
 	}
 	if (GetKeyboardPress(DIK_S))
 	{	// 下へ移動
 		g_Player.spd = VALUE_MOVE;
-		g_Player.dir = XM_PI;
+		//g_Player.dir += (1 * XM_PI)/4;
+		g_Player.movX = -1;
 	}
+
+	g_Player.dir = atan2f(g_Player.movY, g_Player.movX);
 
 
 #ifdef _DEBUG
@@ -208,7 +216,9 @@ void UpdatePlayer(void)
 	SetPositionShadow(g_Player.shadowIdx, pos);
 
 
-	g_Player.spd *= 0.5f;
+	g_Player.spd *= 0.8f;
+	g_Player.movX *= 0.8f;
+	g_Player.movY *= 0.8f;
 
 	if (GetKeyboardTrigger(DIK_SPACE)) {
 
@@ -225,18 +235,18 @@ void UpdatePlayer(void)
 
 	//g_Player.rot.y = cam->rot.y;
 
-	//{	// ポイントライトのテスト
-	//	LIGHT *light = GetLightData(1);
-	//	XMFLOAT3 pos = g_Player.pos;
-	//	pos.y += 30.0f;
+	{	// ポイントライトのテスト
+		LIGHT *light = GetLightData(1);
+		XMFLOAT3 pos = g_Player.pos;
+		pos.y += 30.0f;
 
-	//	light->Position = pos;
-	//	light->Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	//	light->Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
-	//	light->Type = LIGHT_TYPE_POINT;
-	//	light->Enable = TRUE;
-	//	SetLightData(1, light);
-	//}
+		light->Position = pos;
+		light->Diffuse = XMFLOAT4(1.5f, 1.5f, 1.5f, 1.0f);
+		light->Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+		light->Type = LIGHT_TYPE_POINT;
+		light->Enable = TRUE;
+		SetLightData(1, light);
+	}
 
 
 #ifdef _DEBUG	// デバッグ情報を表示する

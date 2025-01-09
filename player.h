@@ -41,6 +41,7 @@ struct PLAYER
 	XMFLOAT4        armModelDiffuse[MODEL_MAX_MATERIAL];
 
 	float			spd;		// 移動スピード
+	float           movX, movY;
 	float			dir;		// 向き
 	float			size;		// 当たり判定の大きさ
 	int				shadowIdx;	// 影のIndex
