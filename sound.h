@@ -13,19 +13,10 @@
 //*****************************************************************************
 enum 
 {
-	SOUND_LABEL_BGM_sample000,	// BGM0
-	SOUND_LABEL_BGM_sample001,	// BGM1
-	SOUND_LABEL_BGM_sample002,	// BGM2
-	SOUND_LABEL_SE_bomb000,		// ”š”­‰¹
-	SOUND_LABEL_SE_defend000,	// 
-	SOUND_LABEL_SE_defend001,	// 
+	SOUND_LABEL_BGM_title,	// BGM0
+	SOUND_LABEL_BGM_inGame,	// BGM1
 	SOUND_LABEL_SE_hit000,		// 
-	SOUND_LABEL_SE_laser000,	// 
-	SOUND_LABEL_SE_lockon000,	// 
 	SOUND_LABEL_SE_shot000,		// 
-	SOUND_LABEL_SE_shot001,		// 
-
-	SOUND_LABEL_BGM_maou,		// BGM Maou
 
 	SOUND_LABEL_MAX,
 };

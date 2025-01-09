@@ -57,6 +57,19 @@ BOOL CollisionBB(XMFLOAT3 mpos, float mw, float mh,
 	return ans;
 }
 
+BOOL CollisionBB(XMFLOAT3 objAPos, COLLIDER2DBOX objAcollider, XMFLOAT3 objBPos, COLLIDER2DBOX objBCollider)
+{
+
+	objAPos.x += objAcollider.offsetX;
+	objAPos.y += objAcollider.offsetY;
+
+	objBPos.x += objBCollider.offsetX;
+	objBPos.y += objBCollider.offsetY;
+
+	return CollisionBB(objAPos,objAcollider.width, objAcollider.height, objBPos, objBCollider.width, objBCollider.height);
+
+}
+
 //=============================================================================
 // BCÇ…ÇÊÇÈìñÇΩÇËîªíËèàóù
 // ÉTÉCÉYÇÕîºåa

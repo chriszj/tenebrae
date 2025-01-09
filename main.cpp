@@ -216,7 +216,7 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	InitSound(hWnd);
 
-	PlaySound(SOUND_LABEL_BGM_sample000);
+	PlaySound(SOUND_LABEL_BGM_inGame);
 
 	// ƒ‰ƒCƒg‚Ì‰Šú‰»
 	InitLight();

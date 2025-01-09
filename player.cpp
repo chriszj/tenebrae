@@ -14,6 +14,7 @@
 #include "light.h"
 #include "bullet.h"
 #include "sound.h"
+#include "field.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -26,6 +27,11 @@
 
 #define PLAYER_SHADOW_SIZE	(0.4f)							// 影の大きさ
 #define PLAYER_OFFSET_Y		(5.0f)							// プレイヤーの足元をあわせる
+
+#define PLAYER_COLLIDER_WIDTH       (10.0f)
+#define PLAYER_COLLIDER_HEIGHT      (10.0f)
+#define PLAYER_COLLIDER_OFFSETX     (0.0f)
+#define PLAYER_COLLIDER_OFFSETY     (0.0f)
 
 
 //*****************************************************************************
@@ -41,6 +47,8 @@ static PLAYER				g_Player;						// プレイヤー
 long lastMouseX;
 long lastMouseY;
 
+static MAPOBJECT* g_CheckPoints;
+
 //=============================================================================
 // 初期化処理
 //=============================================================================
@@ -51,7 +59,16 @@ HRESULT InitPlayer(void)
 
 	g_Player.load = TRUE;
 
-	g_Player.pos = { 0.0f, PLAYER_OFFSET_Y, 0.0f };
+	XMFLOAT3 startPosition = XMFLOAT3(400.0f, 400.0f, 0.0f);
+
+	g_CheckPoints = GetMapObjectsFromLayer(MAPOBJLAYER_LOCATIONS);
+
+	if (g_CheckPoints != NULL)
+	{
+		startPosition = XMFLOAT3((g_CheckPoints[0].x), (g_CheckPoints[0].y), 0.0f);
+	}
+
+	g_Player.pos = { startPosition.x, PLAYER_OFFSET_Y, startPosition.y };
 	g_Player.rot = { 0.0f, 0.0f, 0.0f };
 	g_Player.scl = { 0.3f, 0.3f, 0.3f };
 
@@ -61,6 +78,8 @@ HRESULT InitPlayer(void)
 	g_Player.armPos = { 2.0f, PLAYER_OFFSET_Y, 0.0f };
 	g_Player.armRot = { 0.0f, 0.0f, 0.0f };
 	g_Player.armScl = { 0.3f, 0.3f, 0.3f };
+
+	g_Player.collider = COLLIDER2DBOX(PLAYER_COLLIDER_OFFSETX, PLAYER_COLLIDER_OFFSETY, PLAYER_COLLIDER_WIDTH, PLAYER_COLLIDER_HEIGHT);
 
 	// ここでプレイヤー用の影を作成している
 	XMFLOAT3 pos = g_Player.pos;
@@ -205,9 +224,45 @@ void UpdatePlayer(void)
 	{
 		//g_Player.rot.y = g_Player.dir + cam->rot.y;
 
+		//　フィールドの当たり判定
+		MAPOBJECT* walls = GetMapObjectsFromLayer(MAPOBJLAYER_WALL);
+
+		XMFLOAT3 newXPos = XMFLOAT3(g_Player.pos);
+		XMFLOAT3 newZPos = XMFLOAT3(g_Player.pos);
+		newXPos.x -= sinf(g_Player.rot.y + g_Player.dir) * g_Player.spd;
+		newXPos.y = newXPos.z;
+		newZPos.z -= cosf(g_Player.rot.y + g_Player.dir) * g_Player.spd;
+		newZPos.y = newZPos.z;
+
+		for (int w = 0; w < MAP_OBJECTS_PER_LAYER_MAX; w++)
+		{
+			XMFLOAT3 wallPos = XMFLOAT3(walls[w].x, walls[w].y, 0.0f);
+			COLLIDER2DBOX wallCollider = COLLIDER2DBOX(0.0f, 0.0f, walls[w].width, walls[w].height);
+
+			// X方の当たり判定
+			BOOL ansX = CollisionBB(newXPos, g_Player.collider, wallPos, wallCollider);
+
+			if (ansX)
+			{
+				//g_Player.move.x = 0;
+				newXPos.x = g_Player.pos.x;
+			}
+
+			// Y方の当たり判定
+			BOOL ansY = CollisionBB(newZPos, g_Player.collider, wallPos, wallCollider);
+
+			if (ansY)
+			{
+				//g_Player[i].move.y = 0;
+				newZPos.z = g_Player.pos.z;
+			}
+
+
+		}
+
 		// 入力のあった方向へプレイヤーを向かせて移動させる
-		g_Player.pos.x -= sinf(g_Player.rot.y + g_Player.dir) * g_Player.spd;
-		g_Player.pos.z -= cosf(g_Player.rot.y + g_Player.dir) * g_Player.spd;
+		g_Player.pos.x = newXPos.x;//-= sinf(g_Player.rot.y + g_Player.dir) * g_Player.spd;
+		g_Player.pos.z = newZPos.z;//-= cosf(g_Player.rot.y + g_Player.dir) * g_Player.spd;
 	}
 
 	// 影もプレイヤーの位置に合わせる
