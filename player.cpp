@@ -15,6 +15,7 @@
 #include "bullet.h"
 #include "sound.h"
 #include "field.h"
+#include "enemy.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -22,14 +23,14 @@
 #define	MODEL_PLAYER		"data/MODEL/bear/bear.obj"			// 読み込むモデル名
 #define MODEL_ARM_PLAYER    "data/MODEL/bear/bear_pistol.obj"
 
-#define	VALUE_MOVE			(2.0f)							// 移動量
+#define	VALUE_MOVE			(1.5f)							// 移動量
 #define	VALUE_ROTATE		(XM_PI * 0.02f)					// 回転量
 
 #define PLAYER_SHADOW_SIZE	(0.4f)							// 影の大きさ
 #define PLAYER_OFFSET_Y		(5.0f)							// プレイヤーの足元をあわせる
 
-#define PLAYER_COLLIDER_WIDTH       (10.0f)
-#define PLAYER_COLLIDER_HEIGHT      (10.0f)
+#define PLAYER_COLLIDER_WIDTH       (5.0f)
+#define PLAYER_COLLIDER_HEIGHT      (5.0f)
 #define PLAYER_COLLIDER_OFFSETX     (0.0f)
 #define PLAYER_COLLIDER_OFFSETY     (0.0f)
 
@@ -122,27 +123,26 @@ void UpdatePlayer(void)
 	CAMERA* cam = GetCamera();
 	g_Player.dir = 0;
 	// 移動させちゃう
-	
 
-	if (GetKeyboardPress(DIK_A))
+	if (GetKeyboardPress(DIK_A) || IsButtonPressed(0, BUTTON_LEFT))
 	{	// 左へ移動
 		g_Player.spd = VALUE_MOVE;
 		//g_Player.dir -= XM_PI / 2;
 		g_Player.movY = -1;
 	}
-	if (GetKeyboardPress(DIK_D))
+	if (GetKeyboardPress(DIK_D) || IsButtonPressed(0, BUTTON_RIGHT))
 	{	// 右へ移動
 		g_Player.spd = VALUE_MOVE;
 		//g_Player.dir += XM_PI / 4;
 		g_Player.movY = 1;
 	}
-	if (GetKeyboardPress(DIK_W))
+	if (GetKeyboardPress(DIK_W) || IsButtonPressed(0, BUTTON_UP))
 	{	// 上へ移動
 		g_Player.spd = VALUE_MOVE;
 		//g_Player.dir -= XM_PI / 2;
 		g_Player.movX = 1;
 	}
-	if (GetKeyboardPress(DIK_S))
+	if (GetKeyboardPress(DIK_S) || IsButtonPressed(0, BUTTON_DOWN))
 	{	// 下へ移動
 		g_Player.spd = VALUE_MOVE;
 		//g_Player.dir += (1 * XM_PI)/4;
@@ -170,6 +170,15 @@ void UpdatePlayer(void)
 
 	long diffX = currentMouseX - lastMouseX;
 	long diffY = currentMouseY - lastMouseY;
+
+	if (IsButtonPressed(0, BUTTON_A))
+		diffX += 8.0f;
+	if (IsButtonPressed(0, BUTTON_B))
+		diffX -= 8.0f;
+	if (IsButtonPressed(0, BUTTON_X))
+		diffY += 8.0f;
+	if (IsButtonPressed(0, BUTTON_Y))
+		diffY -= 8.0f;
 
 	//g_Camera.rot.y += (diffX * 0.03f);
 	//g_Camera.rot.z += (diffY * 0.03f);
@@ -275,7 +284,7 @@ void UpdatePlayer(void)
 	g_Player.movX *= 0.8f;
 	g_Player.movY *= 0.8f;
 
-	if (GetKeyboardTrigger(DIK_SPACE)) {
+	if (GetKeyboardTrigger(DIK_SPACE) || IsButtonTriggered(0, BUTTON_R)) {
 
 		XMFLOAT3 dir = XMFLOAT3(g_Player.viewPoint.x - g_Player.pos.x, g_Player.viewPoint.y - g_Player.pos.y, g_Player.viewPoint.z - g_Player.pos.z);
 	
@@ -464,3 +473,17 @@ PLAYER *GetPlayer(void)
 	return &g_Player;
 }
 
+BOOL HasReachedGoal(void) {
+
+	ENEMY* ememies = GetEnemy();
+
+	for (int i = 0; i < MAX_ENEMY; i++) {
+	
+		if (ememies[i].use) {
+			return false;
+		}
+
+	}
+
+	return true;;
+}

@@ -23,7 +23,7 @@
 
 #define	VIEW_ANGLE		(XMConvertToRadians(45.0f))						// ビュー平面の視野角
 #define	VIEW_ASPECT		((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT)	// ビュー平面のアスペクト比	
-#define	VIEW_NEAR_Z		(10.0f)											// ビュー平面のNearZ値
+#define	VIEW_NEAR_Z		(3.0f)											// ビュー平面のNearZ値
 #define	VIEW_FAR_Z		(10000.0f)										// ビュー平面のFarZ値
 
 #define	VALUE_MOVE_CAMERA	(2.0f)										// カメラの移動量

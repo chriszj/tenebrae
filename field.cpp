@@ -27,6 +27,7 @@
 #define MODEL_FIELD_PROPS2		"data/MODEL/level/lvl-0-props2.obj"// 読み込むモデル名
 #define MODEL_FIELD_PROPS3		"data/MODEL/level/lvl-0-props3.obj"// 読み込むモデル名
 #define MODEL_FIELD_PROPS4		"data/MODEL/level/lvl-0-props4.obj"// 読み込むモデル名
+#define MODEL_FIELD_COLLIDERS	"data/MODEL/level/lvl-0-colliders.obj"// 読み込むモデル名
 
 #define TEXTURE_MAX		(1)						// テクスチャの数
 
@@ -101,6 +102,7 @@ HRESULT InitField(void)
 	LoadModel(MODEL_FIELD_PROPS2, &g_Field.fieldWallProps2Model);
 	LoadModel(MODEL_FIELD_PROPS3, &g_Field.fieldWallProps3Model);
 	LoadModel(MODEL_FIELD_PROPS4, &g_Field.fieldWallProps4Model);
+	LoadModel(MODEL_FIELD_COLLIDERS, &g_Field.fieldColliders);
 
 	ParseMap(g_Tilesets, g_MapTileLayers, g_ObjectGroups, "data/MAP/level-0.tmx");
 
@@ -133,6 +135,9 @@ HRESULT InitField(void)
 //=============================================================================
 void UninitField(void)
 {
+	if (!g_Field.load)
+		return;
+
 	// 頂点バッファの解放
 	//if (g_VertexBuffer) {
 	//	g_VertexBuffer->Release();

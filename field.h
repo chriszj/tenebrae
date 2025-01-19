@@ -57,6 +57,7 @@ struct FIELD
 	DX11_MODEL      fieldWallProps2Model;
 	DX11_MODEL      fieldWallProps3Model;
 	DX11_MODEL      fieldWallProps4Model;
+	DX11_MODEL		fieldColliders;
 
 	XMFLOAT4		diffuse[MODEL_MAX_MATERIAL];	// ÉÇÉfÉãÇÃêF
 	BOOL            load;

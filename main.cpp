@@ -18,6 +18,10 @@
 #include "winuser.h"
 #include "bullet.h"
 #include "sound.h"
+#include "fade.h"
+#include "title.h"
+#include "tutorial.h"
+#include "result.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -40,6 +44,7 @@ void Draw(void);
 long g_MouseX = 0;
 long g_MouseY = 0;
 
+int	g_Mode = MODE_TITLE;					// 起動時の画面を設定
 
 #ifdef _DEBUG
 int		g_CountFPS;							// FPSカウンタ
@@ -227,25 +232,15 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// 入力処理の初期化
 	InitInput(hInstance, hWnd);
 
-	// 影の初期化処理
-	InitShadow();
-
-	// フィールドの初期化
-	InitField();
-
-	// プレイヤーの初期化
-	InitPlayer();
-
-	// エネミーの初期化
-	InitEnemy();
-
-	InitBullet();
-
+	InitFade();
 	// ライトを有効化
 	//SetLightEnable(FALSE);
 
 	// 背面ポリゴンをカリング
 	SetCullingMode(CULL_MODE_BACK);
+
+	// 最初のモードをセット
+	SetMode(g_Mode);	// ここはSetModeのままで！
 
 	return S_OK;
 }
@@ -279,6 +274,8 @@ void Uninit(void)
 
 	UninitSound();
 
+	UninitFade();
+
 	// レンダラーの終了処理
 	UninitRenderer();
 }
@@ -295,7 +292,7 @@ void Update(void)
 	UpdateCamera();
 
 	// フィールドの更新処理
-	UpdateField();
+	/*UpdateField();
 
 	// プレイヤーの更新処理
 	UpdatePlayer();
@@ -306,7 +303,57 @@ void Update(void)
 	// 影の更新処理
 	UpdateShadow();
 
-	UpdateBullet();
+	UpdateBullet();*/
+
+	// モードによって処理を分ける
+	switch (g_Mode)
+	{
+	case MODE_TITLE:		// タイトル画面の更新
+		UpdateTitle();
+		break;
+	case MODE_TUTORIAL:
+		UpdateTutorial();
+		break;
+	case MODE_GAME:			// ゲーム画面の更新
+
+		
+		UpdateField();
+		
+		UpdatePlayer();
+		UpdateEnemy();
+		UpdateShadow();
+		UpdateBullet();
+
+		if (GetFade() == FADE_NONE)
+		{	// 全滅チェック
+			int ans = CheckGameClear();
+			if (ans != 0)
+			{
+				
+
+				/*float factor = 50 - GetTimeMachineElapsedTime();
+
+				factor /= 50;
+
+				int currentScore = GetScore() * factor;
+
+				SetScore(currentScore);*/
+
+				//SetMode(MODE_RESULT);
+				SetFade(FADE_OUT, MODE_RESULT);
+				
+			}
+		}
+
+		break;
+
+	case MODE_RESULT:		// リザルト画面の更新
+		UpdateResult();
+		break;
+	}
+
+	//UpdateGUI();
+	UpdateFade();			// フェードの更新処理
 
 }
 
@@ -318,30 +365,104 @@ void Draw(void)
 	// バックバッファクリア
 	Clear();
 
-	// プレイヤー視点
-	XMFLOAT3 viewpointPos = GetPlayer()->viewPoint;
-	XMFLOAT3 pos = GetPlayer()->pos;
-	pos.y += 5;
-	//pos.z -= 5;
+	// モードによって処理を分ける
+	switch (g_Mode)
+	{
+	case MODE_TITLE:		// タイトル画面の描画
+		SetViewPort(TYPE_FULL_SCREEN);
 
-	//pos.y = 0.0f;			// カメラ酔いを防ぐためにクリアしている
-	SetFPSCameraAt(viewpointPos, pos);
-	SetCamera();
+		// 2Dの物を描画する処理
+		// Z比較なし
+		SetDepthEnable(FALSE);
 
-	// フィールドの描画処理
-	DrawField();
+		// ライティングを無効
+		SetLightEnable(FALSE);
 
-	// 影の描画処理
-	DrawShadow();
+		DrawTitle();
 
-	// プレイヤーの描画処理
-	DrawPlayer();
+		// ライティングを有効に
+		SetLightEnable(TRUE);
 
-	// エネミーの描画処理
-	DrawEnemy();
+		// Z比較あり
+		SetDepthEnable(TRUE);
+		break;
 
-	DrawBullet();
+		break;
+	case MODE_TUTORIAL:
+		SetViewPort(TYPE_FULL_SCREEN);
 
+		// 2Dの物を描画する処理
+		// Z比較なし
+		SetDepthEnable(FALSE);
+
+		// ライティングを無効
+		SetLightEnable(FALSE);
+
+		DrawTutorial();
+
+		// ライティングを有効に
+		SetLightEnable(TRUE);
+
+		// Z比較あり
+		SetDepthEnable(TRUE);
+		break;
+
+	case MODE_GAME:			// ゲーム画面の描画
+
+		// ライティングを有効に
+		SetLightEnable(TRUE);
+
+		// Z比較あり
+		SetDepthEnable(TRUE);
+
+		// プレイヤー視点
+		XMFLOAT3 viewpointPos = GetPlayer()->viewPoint;
+		XMFLOAT3 pos = GetPlayer()->pos;
+		pos.y += 5;
+		//pos.z -= 5;
+
+		//pos.y = 0.0f;			// カメラ酔いを防ぐためにクリアしている
+		SetFPSCameraAt(viewpointPos, pos);
+		SetCamera();
+
+		// フィールドの描画処理
+		DrawField();
+
+		// 影の描画処理
+		DrawShadow();
+
+		// プレイヤーの描画処理
+		DrawPlayer();
+
+		// エネミーの描画処理
+		DrawEnemy();
+
+		DrawBullet();
+
+		break;
+
+	case MODE_RESULT:		// リザルト画面の描画
+		SetViewPort(TYPE_FULL_SCREEN);
+
+		// 2Dの物を描画する処理
+		// Z比較なし
+		SetDepthEnable(FALSE);
+
+		// ライティングを無効
+		SetLightEnable(FALSE);
+
+		DrawResult();
+
+		// ライティングを有効に
+		SetLightEnable(TRUE);
+
+		// Z比較あり
+		SetDepthEnable(TRUE);
+		break;
+	}
+
+	//DrawGUI();
+	DrawFade();
 
 #ifdef _DEBUG
 	// デバッグ表示
@@ -371,3 +492,112 @@ char* GetDebugStr(void)
 	return g_DebugStr;
 }
 #endif
+
+//=============================================================================
+// モードの設定
+//=============================================================================
+void SetMode(int mode)
+{
+	// モードを変える前に全部メモリを解放しちゃう
+	StopSound();			// まず曲を止める
+
+	// モードを変える前に全部メモリを解放しちゃう
+
+	// タイトル画面の終了処理
+	UninitTitle();
+
+	UninitTutorial();
+
+	// マップチップの終了処理
+	UninitField();
+
+	// プレイヤーの終了処理
+	UninitPlayer();
+
+	// エネミーの終了処理
+	UninitEnemy();
+
+
+	// リザルトの終了処理
+	UninitResult();
+
+
+	g_Mode = mode;	// 次のモードをセットしている
+
+	switch (g_Mode)
+	{
+	case MODE_TITLE:
+		// タイトル画面の初期化
+		InitTitle();
+		PlaySound(SOUND_LABEL_BGM_title);
+		break;
+
+	case MODE_TUTORIAL:
+		InitTutorial();
+		PlaySound(SOUND_LABEL_BGM_title);
+		break;
+
+	case MODE_GAME:
+		// ゲーム画面の初期化
+
+		// 影の初期化処理
+		InitShadow();
+
+		// フィールドの初期化
+		InitField();
+
+		// プレイヤーの初期化
+		InitPlayer();
+
+		// エネミーの初期化
+		InitEnemy();
+
+		InitBullet();
+
+		PlaySound(SOUND_LABEL_BGM_inGame);
+		break;
+
+	case MODE_RESULT:
+		InitResult(RESULTTYPE_WIN);
+		PlaySound(SOUND_LABEL_BGM_title);
+		break;
+
+	case MODE_MAX:
+		break;
+	}
+}
+
+//=============================================================================
+// モードの取得
+//=============================================================================
+int GetMode(void)
+{
+	return g_Mode;
+}
+
+
+//=============================================================================
+// 全滅チェック
+//=============================================================================
+int CheckGameClear(void)
+{
+
+	// エネミーの数が０ならプレイヤーの勝ちとする
+	BOOL cnt = HasReachedGoal();
+	if (cnt)
+	{
+		return 1;	// プレイヤーの勝ち
+	}
+
+	// プレイヤーの数が０ならエネミーの勝ちとする
+	//cnt = GetPlayerCount();
+
+	//int remainingTime = TIMELIMIT_SECONDS - GetTimeMachineElapsedTime();
+
+	//if (cnt <= 0 || remainingTime < 1)
+	//{
+	//	return 2;	// エネミーの勝ち
+	//}
+
+	return 0;		// ゲーム継続
+}

@@ -64,3 +64,4 @@ void DrawPlayer(void);
 
 PLAYER *GetPlayer(void);
 
+BOOL HasReachedGoal(void);

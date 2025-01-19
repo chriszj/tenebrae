@@ -85,3 +85,7 @@ long GetMousePosX(void);
 long GetMousePosY(void);
 char* GetDebugStr(void);
 
+void SetMode(int mode);
+int GetMode(void);
+
+int CheckGameClear(void);

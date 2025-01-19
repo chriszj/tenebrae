@@ -473,6 +473,7 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	rd.CullMode = D3D11_CULL_NONE; 
 	rd.DepthClipEnable = TRUE; 
 	rd.MultisampleEnable = FALSE; 
+	//rd.DepthBiasClamp = 5;
 	g_D3DDevice->CreateRasterizerState( &rd, &g_RasterStateCullOff);
 
 	rd.CullMode = D3D11_CULL_FRONT;
