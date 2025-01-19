@@ -6,11 +6,19 @@
 //=============================================================================
 #pragma once
 
+/////////////
+// LINKING //
+/////////////
+#pragma comment(lib, "d3d11.lib")
+#pragma comment(lib, "dxgi.lib")
+#pragma comment(lib, "d3dcompiler.lib")
+
 
 //*********************************************************
 // マクロ定義
 //*********************************************************
 #define LIGHT_MAX		(5)
+#define SHADOWMAP_SIZE  (512)
 
 enum LIGHT_TYPE
 {
@@ -65,6 +73,19 @@ struct MATERIAL
 	int			noTexSampling;
 };
 
+// シャドウイングマッピングのため
+struct LIGHTVIEW {
+
+	XMFLOAT4X4			mtxView;		// ビューマトリックス
+	XMFLOAT4X4			mtxInvView;		// ビューマトリックス
+	XMFLOAT4X4			mtxProjection;	// プロジェクションマトリックス
+
+	XMFLOAT3			at;				// カメラの注視点
+	XMFLOAT3			up;				// カメラの上方向ベクトル
+	XMFLOAT3			rot;			// カメラの回転
+
+};
+
 // ライト構造体
 struct LIGHT {
 	XMFLOAT3	Direction;	// ライトの方向
@@ -74,6 +95,7 @@ struct LIGHT {
 	float		Attenuation;// 減衰率
 	int			Type;		// ライト種別・有効フラグ
 	int			Enable;		// ライト種別・有効フラグ
+	LIGHTVIEW   View;
 };
 
 // フォグ構造体
@@ -120,4 +142,8 @@ void SetFuchi(int flag);
 void SetShaderCamera(XMFLOAT3 pos);
 
 void SetClearColor(float* color4);
+
+bool SetupRenderToTexture(LIGHT* lightsource);
+
+bool SetupShadowRender(void);
 

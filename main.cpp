@@ -23,6 +23,10 @@
 #include "tutorial.h"
 #include "result.h"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_win32.h"
+#include "imgui/imgui_impl_dx11.h"
+
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -41,10 +45,25 @@ void Draw(void);
 //*****************************************************************************
 // グローバル変数:
 //*****************************************************************************
+// IMGUI
+// Data
+static ID3D11Device* g_pd3dDevice = nullptr;
+static ID3D11DeviceContext* g_pd3dDeviceContext = nullptr;
+
+static bool g_IMGUIActive = false;
+
+// Our state
+bool show_demo_window = true;
+bool show_another_window = false;
+ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+
+
+///IMGUI
+
 long g_MouseX = 0;
 long g_MouseY = 0;
 
-int	g_Mode = MODE_TITLE;					// 起動時の画面を設定
+int	g_Mode = MODE_GAME;					// 起動時の画面を設定
 
 #ifdef _DEBUG
 int		g_CountFPS;							// FPSカウンタ
@@ -179,11 +198,17 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLi
 	return (int)msg.wParam;
 }
 
+// Forward declare message handler from imgui_impl_win32.cpp
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
 //=============================================================================
 // プロシージャ
 //=============================================================================
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+		return true;
+
 	switch(message)
 	{
 	case WM_DESTROY:
@@ -242,6 +267,24 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// 最初のモードをセット
 	SetMode(g_Mode);	// ここはSetModeのままで！
 
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+	// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsLight();
+
+	// Setup Platform/Renderer backends
+	g_pd3dDevice = GetDevice();
+	g_pd3dDeviceContext = GetDeviceContext();
+
+	ImGui_ImplWin32_Init(hWnd);
+	ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
+
 	return S_OK;
 }
 
@@ -278,6 +321,11 @@ void Uninit(void)
 
 	// レンダラーの終了処理
 	UninitRenderer();
+
+	// Cleanup
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 }
 
 //=============================================================================
@@ -290,6 +338,11 @@ void Update(void)
 
 	// カメラ更新
 	UpdateCamera();
+
+	//// Start the Dear ImGui frame
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
 
 	// フィールドの更新処理
 	/*UpdateField();
@@ -304,6 +357,12 @@ void Update(void)
 	UpdateShadow();
 
 	UpdateBullet();*/
+
+	if (GetKeyboardTrigger(DIK_I))
+	{	
+		g_IMGUIActive = !g_IMGUIActive;
+		ShowCursor(g_IMGUIActive);
+	}
 
 	// モードによって処理を分ける
 	switch (g_Mode)
@@ -355,6 +414,57 @@ void Update(void)
 	//UpdateGUI();
 	UpdateFade();			// フェードの更新処理
 
+	//// Start the Dear ImGui frame
+	//ImGui_ImplDX11_NewFrame();
+	//ImGui_ImplWin32_NewFrame();
+	//ImGui::NewFrame();
+
+	//// 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
+	//if (show_demo_window)
+	//	ImGui::ShowDemoWindow(&show_demo_window);
+
+	//// 2. Show a simple window that we create ourselves. We use a Begin/End pair to create a named window.
+	//{
+	//	static float f = 0.0f;
+	//	static int counter = 0;
+
+	//	ImGui::Begin("Hello, world!");                          // Create a window called "Hello, world!" and append into it.
+
+	//	ImGui::Text("This is some useful text.");               // Display some text (you can use a format strings too)
+	//	ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+	//	ImGui::Checkbox("Another Window", &show_another_window);
+
+	//	ImGui::SliderFloat("float", &f, 0.0f, 1.0f);            // Edit 1 float using a slider from 0.0f to 1.0f
+	//	ImGui::ColorEdit3("clear color", (float*)&clear_color); // Edit 3 floats representing a color
+
+	//	if (ImGui::Button("Button"))                            // Buttons return true when clicked (most widgets return true when edited/activated)
+	//		counter++;
+	//	ImGui::SameLine();
+	//	ImGui::Text("counter = %d", counter);
+
+	//	//ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / io.Framerate, io.Framerate);
+	//	ImGui::End();
+	//}
+
+	//// 3. Show another simple window.
+	//if (show_another_window)
+	//{
+	//	ImGui::Begin("Another Window", &show_another_window);   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+	//	ImGui::Text("Hello from another window!");
+	//	if (ImGui::Button("Close Me"))
+	//		show_another_window = false;
+	//	ImGui::End();
+	//}
+
+	ImGui::EndFrame();
+
+	// Rendering
+	//ImGui::Render();
+	//const float clear_color_with_alpha[4] = { clear_color.x * clear_color.w, clear_color.y * clear_color.w, clear_color.z * clear_color.w, clear_color.w };
+	//g_pd3dDeviceContext->OMSetRenderTargets(1, &g_mainRenderTargetView, nullptr);
+	//g_pd3dDeviceContext->ClearRenderTargetView(g_mainRenderTargetView, clear_color_with_alpha);
+	//ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+
 }
 
 //=============================================================================
@@ -362,8 +472,12 @@ void Update(void)
 //=============================================================================
 void Draw(void)
 {
+	ImGui::Render();
+
 	// バックバッファクリア
 	Clear();
+
+	int renderingPass = 2;
 
 	// モードによって処理を分ける
 	switch (g_Mode)
@@ -407,37 +521,52 @@ void Draw(void)
 		SetDepthEnable(TRUE);
 		break;
 
-	case MODE_GAME:			// ゲーム画面の描画
+	case MODE_GAME:			
+		// ゲーム画面の描画
 
-		// ライティングを有効に
-		SetLightEnable(TRUE);
+		
 
-		// Z比較あり
-		SetDepthEnable(TRUE);
+		do {
 
-		// プレイヤー視点
-		XMFLOAT3 viewpointPos = GetPlayer()->viewPoint;
-		XMFLOAT3 pos = GetPlayer()->pos;
-		pos.y += 5;
-		//pos.z -= 5;
+			if (renderingPass > 1) {
+				
+				//GetDeviceContext()->VSSetShader()
 
-		//pos.y = 0.0f;			// カメラ酔いを防ぐためにクリアしている
-		SetFPSCameraAt(viewpointPos, pos);
-		SetCamera();
+			}
 
-		// フィールドの描画処理
-		DrawField();
+			// ライティングを有効に
+			SetLightEnable(TRUE);
 
-		// 影の描画処理
-		DrawShadow();
+			// Z比較あり
+			SetDepthEnable(TRUE);
 
-		// プレイヤーの描画処理
-		DrawPlayer();
+			// プレイヤー視点
+			XMFLOAT3 viewpointPos = GetPlayer()->viewPoint;
+			XMFLOAT3 pos = GetPlayer()->pos;
+			pos.y += 5;
+			//pos.z -= 5;
 
-		// エネミーの描画処理
-		DrawEnemy();
+			//pos.y = 0.0f;			// カメラ酔いを防ぐためにクリアしている
+			SetFPSCameraAt(viewpointPos, pos);
+			SetCamera();
 
-		DrawBullet();
+			// フィールドの描画処理
+			DrawField();
+
+			// 影の描画処理
+			DrawShadow();
+
+			// プレイヤーの描画処理
+			DrawPlayer();
+
+			// エネミーの描画処理
+			DrawEnemy();
+
+			DrawBullet();
+
+			renderingPass -=1;
+
+		} while (renderingPass > 0);
 
 		break;
 
@@ -468,6 +597,8 @@ void Draw(void)
 	// デバッグ表示
 	DrawDebugProc();
 #endif
+
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	// バックバッファ、フロントバッファ入れ替え
 	Present();
@@ -600,4 +731,10 @@ int CheckGameClear(void)
 	//}
 
 	return 0;		// ゲーム継続
+}
+
+bool IsIMGUIActive(void) {
+
+	return g_IMGUIActive;
+
 }

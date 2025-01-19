@@ -112,6 +112,38 @@ void VertexShaderPolygon( in  float4 inPosition		: POSITION0,
 	outDiffuse = inDiffuse;
 }
 
+//-----------------------------------------------------------------------------
+// Vertex Shader: VertShadow
+// Desc: Process vertex for the shadow map
+//-----------------------------------------------------------------------------
+void VertexShadow(	in float4 inPosition : POSITION0,
+					in float4 inNormal : NORMAL0,
+					in float4 inDiffuse : COLOR0,
+					in float2 inTexCoord : TEXCOORD0,
+
+					out float4 outPosition : SV_POSITION,
+					out float4 outNormal : NORMAL0,
+					out float2 outTexCoord : TEXCOORD0,
+					out float4 outDiffuse : COLOR0,
+					out float4 outWorldPos : POSITION0)
+{
+    //
+    // Compute the projected coordinates
+    //
+    //oPos = mul(Pos, g_mWorldView);
+    //oPos = mul(oPos, g_mProj);
+	
+    matrix wvp;
+    wvp = mul(World, View);
+    wvp = mul(wvp, Projection);
+    outPosition = mul(inPosition, wvp);
+
+    //
+    // Store z and w in our spare texcoord
+    //
+    //Depth.xy = oPos.zw;
+    outTexCoord.xy = outPosition.zw;
+}
 
 
 //*****************************************************************************
@@ -219,4 +251,17 @@ void PixelShaderPolygon( in  float4 inPosition		: SV_POSITION,
 			outDiffuse.g = 0.0f;			
 		}
 	}
+}
+
+//-----------------------------------------------------------------------------
+// Pixel Shader: PixShadow
+// Desc: Process pixel for the shadow map
+//-----------------------------------------------------------------------------
+void PixelShadow(float2 Depth : TEXCOORD0,
+                out float4 Color : COLOR)
+{
+    //
+    // Depth is z / w
+    //
+    Color = Depth.x / Depth.y;
 }

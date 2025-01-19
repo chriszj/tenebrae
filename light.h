@@ -16,6 +16,7 @@
 //*****************************************************************************
 void InitLight(void);
 void UpdateLight(void);
+void DrawLightShadowMaps();
 
 void SetLightData(int index, LIGHT *light);
 void SetFogData(FOG *fog);

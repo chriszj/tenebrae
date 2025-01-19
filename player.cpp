@@ -16,6 +16,7 @@
 #include "sound.h"
 #include "field.h"
 #include "enemy.h"
+#include "imgui/imgui.h"
 
 //*****************************************************************************
 // マクロ定義
@@ -47,6 +48,8 @@ static PLAYER				g_Player;						// プレイヤー
 
 long lastMouseX;
 long lastMouseY;
+
+XMFLOAT3 lightOffset;
 
 static MAPOBJECT* g_CheckPoints;
 
@@ -168,8 +171,8 @@ void UpdatePlayer(void)
 	long currentMouseX = pt.x;
 	long currentMouseY = pt.y;
 
-	long diffX = currentMouseX - lastMouseX;
-	long diffY = currentMouseY - lastMouseY;
+	long diffX = 0;
+	long diffY = 0;
 
 	if (IsButtonPressed(0, BUTTON_A))
 		diffX += 8.0f;
@@ -179,6 +182,11 @@ void UpdatePlayer(void)
 		diffY += 8.0f;
 	if (IsButtonPressed(0, BUTTON_Y))
 		diffY -= 8.0f;
+
+	if (!IsIMGUIActive()) {
+		diffX = currentMouseX - lastMouseX;
+		diffY = currentMouseY - lastMouseY;
+	}
 
 	//g_Camera.rot.y += (diffX * 0.03f);
 	//g_Camera.rot.z += (diffY * 0.03f);
@@ -210,8 +218,8 @@ void UpdatePlayer(void)
 
 	/*g_Player.armRot.x = rotx;
 	g_Player.armRot.y = roty + XM_PI;*/
-
-	SetCursorPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
+	if(!IsIMGUIActive())
+		SetCursorPos(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2);
 
 	GetCursorPos(&pt);
 
@@ -303,6 +311,26 @@ void UpdatePlayer(void)
 		LIGHT *light = GetLightData(1);
 		XMFLOAT3 pos = g_Player.pos;
 		pos.y += 30.0f;
+		
+
+		if (IsIMGUIActive()) {
+		
+			ImGui::Begin("Player Light");                          // Create a window called "Hello, world!" and append into it.
+
+			ImGui::Text("Edit player's light.");               // Display some text (you can use a format strings too)
+			//	ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
+			//	ImGui::Checkbox("Another Window", &show_another_window);
+
+			ImGui::SliderFloat("XOffset", &lightOffset.x, -20.0f, 20.0f);
+			ImGui::SliderFloat("YOffset", &lightOffset.y, -20.0f, 20.0f);
+			ImGui::SliderFloat("ZOffset", &lightOffset.z, -20.0f, 20.0f);
+		
+			ImGui::End();
+		}
+
+		pos.x += lightOffset.x;
+		pos.y += lightOffset.y;
+		pos.z += lightOffset.z;
 
 		light->Position = pos;
 		light->Diffuse = XMFLOAT4(1.5f, 1.5f, 1.5f, 1.0f);

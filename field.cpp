@@ -98,10 +98,10 @@ HRESULT InitField(void)
 	LoadModel(MODEL_FIELD_PILLARCORNERS, &g_Field.fieldPillarCornersModel);
 	LoadModel(MODEL_FIELD_WALLDOORS, &g_Field.fieldWallDoorsModel);
 	LoadModel(MODEL_FIELD_GROUND, &g_Field.fieldWallGroundModel);
-	LoadModel(MODEL_FIELD_PROPS1, &g_Field.fieldWallProps1Model);
+	/*LoadModel(MODEL_FIELD_PROPS1, &g_Field.fieldWallProps1Model);
 	LoadModel(MODEL_FIELD_PROPS2, &g_Field.fieldWallProps2Model);
 	LoadModel(MODEL_FIELD_PROPS3, &g_Field.fieldWallProps3Model);
-	LoadModel(MODEL_FIELD_PROPS4, &g_Field.fieldWallProps4Model);
+	LoadModel(MODEL_FIELD_PROPS4, &g_Field.fieldWallProps4Model);*/
 	LoadModel(MODEL_FIELD_COLLIDERS, &g_Field.fieldColliders);
 
 	ParseMap(g_Tilesets, g_MapTileLayers, g_ObjectGroups, "data/MAP/level-0.tmx");
@@ -159,10 +159,10 @@ void UninitField(void)
 	UnloadModel(&g_Field.fieldPillarCornersModel);
 	UnloadModel(&g_Field.fieldWallDoorsModel);
 	UnloadModel(&g_Field.fieldWallGroundModel);
-	UnloadModel(&g_Field.fieldWallProps1Model);
+	/*UnloadModel(&g_Field.fieldWallProps1Model);
 	UnloadModel(&g_Field.fieldWallProps2Model);
 	UnloadModel(&g_Field.fieldWallProps3Model);
-	UnloadModel(&g_Field.fieldWallProps4Model);
+	UnloadModel(&g_Field.fieldWallProps4Model);*/
 
 	g_Field.load = FALSE;
 
@@ -259,10 +259,10 @@ void DrawField(void)
 	DrawModel(&g_Field.fieldPillarCornersModel);
 	DrawModel(&g_Field.fieldWallDoorsModel);
 	DrawModel(&g_Field.fieldWallGroundModel);
-	DrawModel(&g_Field.fieldWallProps1Model);
+	/*DrawModel(&g_Field.fieldWallProps1Model);
 	DrawModel(&g_Field.fieldWallProps2Model);
 	DrawModel(&g_Field.fieldWallProps3Model);
-	DrawModel(&g_Field.fieldWallProps4Model);
+	DrawModel(&g_Field.fieldWallProps4Model);*/
 
 	// •Ç‚Ì“–‚½‚è”»’è‚Ì•\Ž¦
 	if (!MAP_DRAW_DEBUG_WALLS)

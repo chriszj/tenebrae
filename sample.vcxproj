@@ -140,10 +140,19 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="debugproc.h" />
+    <ClInclude Include="depthshaderclass.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="field.h" />
     <ClInclude Include="gui.h" />
+    <ClInclude Include="imgui\imconfig.h" />
+    <ClInclude Include="imgui\imgui.h" />
+    <ClInclude Include="imgui\imgui_impl_dx11.h" />
+    <ClInclude Include="imgui\imgui_impl_win32.h" />
+    <ClInclude Include="imgui\imgui_internal.h" />
+    <ClInclude Include="imgui\imstb_rectpack.h" />
+    <ClInclude Include="imgui\imstb_textedit.h" />
+    <ClInclude Include="imgui\imstb_truetype.h" />
     <ClInclude Include="input.h" />
     <ClInclude Include="light.h" />
     <ClInclude Include="main.h" />
@@ -152,9 +161,11 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="pugixml.hpp" />
     <ClInclude Include="renderer.h" />
+    <ClInclude Include="rendertextureclass.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="shadow.h" />
+    <ClInclude Include="shadowshaderclass.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="title.h" />
@@ -165,10 +176,18 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="debugproc.cpp" />
+    <ClCompile Include="depthshaderclass.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="field.cpp" />
     <ClCompile Include="gui.cpp" />
+    <ClCompile Include="imgui\imgui.cpp" />
+    <ClCompile Include="imgui\imgui_demo.cpp" />
+    <ClCompile Include="imgui\imgui_draw.cpp" />
+    <ClCompile Include="imgui\imgui_impl_dx11.cpp" />
+    <ClCompile Include="imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="imgui\imgui_tables.cpp" />
+    <ClCompile Include="imgui\imgui_widgets.cpp" />
     <ClCompile Include="input.cpp" />
     <ClCompile Include="light.cpp" />
     <ClCompile Include="main.cpp" />
@@ -177,13 +196,21 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="pugixml.cpp" />
     <ClCompile Include="renderer.cpp" />
+    <ClCompile Include="rendertextureclass.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="shadow.cpp" />
+    <ClCompile Include="shadowshaderclass.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="title.cpp" />
     <ClCompile Include="tutorial.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="depth.ps" />
+    <None Include="depth.vs" />
+    <None Include="shadow.ps" />
+    <None Include="shadow.vs" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
