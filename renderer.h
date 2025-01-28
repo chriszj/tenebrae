@@ -143,7 +143,7 @@ void SetShaderCamera(XMFLOAT3 pos);
 
 void SetClearColor(float* color4);
 
-bool SetupRenderToTexture(LIGHT* lightsource);
+void SetRenderShaders();
 
-bool SetupShadowRender(void);
+void SetRenderTarget();
 

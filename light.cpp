@@ -8,6 +8,11 @@
 #include "renderer.h"
 #include "light.h"
 
+#define LIGHT_VIEW_ANGLE  (XMConvertToRadians(45.0f))	
+#define LIGHT_VIEW_ASPECT ((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT)
+#define LIGHT_VIEW_NEAR_Z  3.0f
+#define LIGHT_VIEW_FAR_Z   100000.0f
+
 //*****************************************************************************
 // マクロ定義
 //*****************************************************************************
@@ -77,12 +82,6 @@ void UpdateLight(void)
 
 }
 
-void DrawLightShadowMaps() 
-{
-
-
-}
-
 //=============================================================================
 // ライトの設定
 // Typeによってセットするメンバー変数が変わってくる
@@ -92,6 +91,44 @@ void SetLightData(int index, LIGHT *light)
 	SetLight(index, light);
 }
 
+void SetLightMatrices(LIGHT* light)
+{
+	
+
+	XMMATRIX mtxWorld = XMMatrixIdentity();
+	XMMATRIX mtxTranslate;
+
+	mtxTranslate = XMMatrixTranslation(light->Position.x, light->Position.y, light->Position.z);
+	mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
+	
+	SetWorldMatrix(&mtxWorld);
+
+	// ビューマトリックス設定
+	XMMATRIX mtxView;
+	mtxView = XMMatrixLookAtLH(XMLoadFloat3(&light->Position), XMLoadFloat3(&light->View.at), XMLoadFloat3(&light->View.up));
+	SetViewMatrix(&mtxView);
+	XMStoreFloat4x4(&light->View.mtxView, mtxView);
+
+	XMMATRIX mtxInvView;
+	mtxInvView = XMMatrixInverse(nullptr, mtxView);
+	XMStoreFloat4x4(&light->View.mtxInvView, mtxInvView);
+
+	// プロジェクションマトリックス設定
+	XMMATRIX mtxProjection;
+	mtxProjection = XMMatrixPerspectiveFovLH(LIGHT_VIEW_ANGLE, LIGHT_VIEW_ASPECT, LIGHT_VIEW_NEAR_Z, LIGHT_VIEW_FAR_Z);
+
+	SetProjectionMatrix(&mtxProjection);
+	XMStoreFloat4x4(&light->View.mtxProjection, mtxProjection);
+}
+
+void SetLightMatrices(int index)
+{
+
+	LIGHT* light = GetLightData(index);
+
+	SetLightMatrices(light);
+
+}
 
 LIGHT *GetLightData(int index)
 {

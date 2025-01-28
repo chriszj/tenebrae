@@ -6,6 +6,7 @@
 //=============================================================================
 #include "main.h"
 #include "renderer.h"
+#include "depthrenderer.h"
 #include "input.h"
 #include "camera.h"
 #include "debugproc.h"
@@ -244,6 +245,8 @@ HRESULT Init(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	// レンダラーの初期化
 	InitRenderer(hInstance, hWnd, bWindow);
 
+	InitDepthRenderer(GetDevice(), hWnd);
+
 	InitSound(hWnd);
 
 	PlaySound(SOUND_LABEL_BGM_inGame);
@@ -318,6 +321,8 @@ void Uninit(void)
 	UninitSound();
 
 	UninitFade();
+
+	UninitDepthRenderer();
 
 	// レンダラーの終了処理
 	UninitRenderer();
@@ -528,27 +533,40 @@ void Draw(void)
 
 		do {
 
-			if (renderingPass > 1) {
-				
-				//GetDeviceContext()->VSSetShader()
-
-			}
-
 			// ライティングを有効に
 			SetLightEnable(TRUE);
 
 			// Z比較あり
 			SetDepthEnable(TRUE);
 
-			// プレイヤー視点
-			XMFLOAT3 viewpointPos = GetPlayer()->viewPoint;
-			XMFLOAT3 pos = GetPlayer()->pos;
-			pos.y += 5;
-			//pos.z -= 5;
 
-			//pos.y = 0.0f;			// カメラ酔いを防ぐためにクリアしている
-			SetFPSCameraAt(viewpointPos, pos);
-			SetCamera();
+			if (renderingPass > 1) {
+				
+				//SetDepthRenderTarget(GetDeviceContext());
+				//ClearDepthRenderTarget(GetDeviceContext(), 0.0f, 0.0f, 0.0f, 0.0f);
+				
+				LIGHT* light = GetLightData(1);
+
+				SetLightMatrices(light);
+
+				SetDepthRenderShaders(GetDeviceContext());
+
+			}
+			else {
+
+				//SetRenderTarget();
+				//SetRenderShaders();
+
+				// プレイヤー視点
+				XMFLOAT3 viewpointPos = GetPlayer()->viewPoint;
+				XMFLOAT3 pos = GetPlayer()->pos;
+				pos.y += 5;
+				//pos.z -= 5;
+
+				//pos.y = 0.0f;			// カメラ酔いを防ぐためにクリアしている
+				//SetFPSCameraAt(viewpointPos, pos);
+				//SetCamera();
+			}
 
 			// フィールドの描画処理
 			DrawField();

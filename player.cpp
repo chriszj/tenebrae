@@ -310,7 +310,7 @@ void UpdatePlayer(void)
 	{	// ポイントライトのテスト
 		LIGHT *light = GetLightData(1);
 		XMFLOAT3 pos = g_Player.pos;
-		pos.y += 30.0f;
+		pos.y += 5.0f;
 		
 
 		if (IsIMGUIActive()) {
@@ -321,9 +321,9 @@ void UpdatePlayer(void)
 			//	ImGui::Checkbox("Demo Window", &show_demo_window);      // Edit bools storing our window open/close state
 			//	ImGui::Checkbox("Another Window", &show_another_window);
 
-			ImGui::SliderFloat("XOffset", &lightOffset.x, -20.0f, 20.0f);
-			ImGui::SliderFloat("YOffset", &lightOffset.y, -20.0f, 20.0f);
-			ImGui::SliderFloat("ZOffset", &lightOffset.z, -20.0f, 20.0f);
+			ImGui::SliderFloat("XOffset", &lightOffset.x, -200.0f, 200.0f);
+			ImGui::SliderFloat("YOffset", &lightOffset.y, -200.0f, 200.0f);
+			ImGui::SliderFloat("ZOffset", &lightOffset.z, -200.0f, 200.0f);
 		
 			ImGui::End();
 		}
@@ -337,7 +337,10 @@ void UpdatePlayer(void)
 		light->Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		light->Type = LIGHT_TYPE_POINT;
 		light->Enable = TRUE;
+		light->View.at = cam->at;
+		light->View.up = cam->up;
 		SetLightData(1, light);
+
 	}
 
 

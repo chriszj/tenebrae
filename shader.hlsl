@@ -112,6 +112,59 @@ void VertexShaderPolygon( in  float4 inPosition		: POSITION0,
 	outDiffuse = inDiffuse;
 }
 
+void VertexShaderForSM(in float4 inPosition : POSITION0,
+						  in float4 inNormal : NORMAL0,
+						  in float4 inDiffuse : COLOR0,
+						  in float2 inTexCoord : TEXCOORD0,
+						  in float4 inDepth : TEXTURE0,
+
+						  out float4 outPosition : SV_POSITION,
+						  out float4 outNormal : NORMAL0,
+						  out float2 outTexCoord : TEXCOORD0,
+						  out float4 outDiffuse : COLOR0,
+						  out float4 outWorldPos : POSITION0,
+						  out float4 outDepth : TEXTURE0)
+{
+    /*matrix wvp;
+    wvp = mul(World, View);
+    wvp = mul(wvp, Projection);
+	
+    outPosition = mul(inPosition, wvp);
+
+    outNormal = normalize(mul(float4(inNormal.xyz, 0.0f), World));
+
+    outTexCoord = inTexCoord;
+
+    outWorldPos = mul(inPosition, World);
+
+    outDiffuse = inDiffuse;*/
+	
+    //PixelInputType output;
+    
+    
+	// Change the position vector to be 4 units for proper matrix calculations.
+    inPosition.w = 1.0f;
+
+	// Calculate the position of the vertex against the world, view, and projection matrices.
+    outPosition = mul(inPosition, World);
+    outPosition = mul(outPosition, View);
+    outPosition = mul(outPosition, Projection);
+	
+	// testing
+    //outNormal = normalize(mul(float4(inNormal.xyz, 0.0f), World));
+
+    //outTexCoord = inTexCoord;
+
+    //outWorldPos = mul(inPosition, World);
+
+    //outDiffuse = inDiffuse;
+
+	// Store the position value in a second input value for depth value calculations.
+    outDepth = outPosition;
+	
+    
+}
+
 //-----------------------------------------------------------------------------
 // Vertex Shader: VertShadow
 // Desc: Process vertex for the shadow map
@@ -150,7 +203,9 @@ void VertexShadow(	in float4 inPosition : POSITION0,
 // グローバル変数
 //*****************************************************************************
 Texture2D		g_Texture : register( t0 );
+Texture2D		g_DepthTexture : register(t1);
 SamplerState	g_SamplerState : register( s0 );
+SamplerState	g_SamplerStateClamp : register(s1);
 
 
 //=============================================================================
@@ -251,6 +306,129 @@ void PixelShaderPolygon( in  float4 inPosition		: SV_POSITION,
 			outDiffuse.g = 0.0f;			
 		}
 	}
+	
+}
+
+void PixelShaderForSM(in float4 inPosition : SV_POSITION,
+						 in float4 inNormal : NORMAL0,
+						 in float2 inTexCoord : TEXCOORD0,
+						 in float4 inDiffuse : COLOR0,
+						 in float4 inWorldPos : POSITION0,
+						 in float4 inDepth : TEXTURE0,
+
+						 out float4 outDiffuse : SV_Target)
+{
+ //   float4 color;
+
+ //   if (Material.noTexSampling == 0)
+ //   {
+ //       color = g_Texture.Sample(g_SamplerState, inTexCoord);
+
+ //       color *= inDiffuse;
+ //   }
+ //   else
+ //   {
+ //       color = inDiffuse;
+ //   }
+
+ //   if (Light.Enable == 0)
+ //   {
+ //       color = color * Material.Diffuse;
+ //   }
+ //   else
+ //   {
+ //       float4 tempColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+ //       float4 outColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+
+ //       for (int i = 0; i < 5; i++)
+ //       {
+ //           float3 lightDir;
+ //           float light;
+
+ //           if (Light.Flags[i].y == 1)
+ //           {
+ //               if (Light.Flags[i].x == 1)
+ //               {
+ //                   lightDir = normalize(Light.Direction[i].xyz);
+ //                   light = dot(lightDir, inNormal.xyz);
+
+ //                   light = 0.5 - 0.5 * light;
+ //                   tempColor = color * Material.Diffuse * light * Light.Diffuse[i];
+ //               }
+ //               else if (Light.Flags[i].x == 2)
+ //               {
+ //                   lightDir = normalize(Light.Position[i].xyz - inWorldPos.xyz);
+ //                   light = dot(lightDir, inNormal.xyz);
+
+ //                   tempColor = color * Material.Diffuse * light * Light.Diffuse[i];
+
+ //                   float distance = length(inWorldPos - Light.Position[i]);
+
+ //                   float att = saturate((Light.Attenuation[i].x - distance) / Light.Attenuation[i].x);
+ //                   tempColor *= att;
+ //               }
+ //               else
+ //               {
+ //                   tempColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+ //               }
+
+ //               outColor += tempColor;
+ //           }
+ //       }
+
+ //       color = outColor;
+ //       color.a = inDiffuse.a * Material.Diffuse.a;
+ //   }
+
+	////フォグ
+ //   if (Fog.Enable == 1)
+ //   {
+ //       float z = inPosition.z * inPosition.w;
+ //       float f = (Fog.Distance.y - z) / (Fog.Distance.y - Fog.Distance.x);
+ //       f = saturate(f);
+ //       outDiffuse = f * color + (1 - f) * Fog.FogColor;
+ //       outDiffuse.a = color.a;
+ //   }
+ //   else
+ //   {
+ //       outDiffuse = color;
+ //   }
+
+	////縁取り
+ //   if (fuchi == 1)
+ //   {
+ //       float angle = dot(normalize(inWorldPos.xyz - Camera.xyz), normalize(inNormal));
+	//	//if ((angle < 0.5f)&&(angle > -0.5f))
+ //       if (angle > -0.3f)
+ //       {
+ //           outDiffuse.rb = 1.0f;
+ //           outDiffuse.g = 0.0f;
+ //       }
+ //   }
+	
+    /*float depthValue;
+    float4 color;
+	
+	
+	// Get the depth value of the pixel by dividing the Z pixel depth by the homogeneous W coordinate.
+    depthValue = input.depthPosition.z / input.depthPosition.w;
+
+    color = float4(depthValue, depthValue, depthValue, 1.0f);
+
+    return color;*/
+	
+    float depthValue;
+    float4 color;
+	
+	
+	// Get the depth value of the pixel by dividing the Z pixel depth by the homogeneous W coordinate.
+    depthValue = inDepth.z / inDepth.w;
+
+    color = float4(depthValue, depthValue, depthValue, 1.0f);
+
+    outDiffuse = color;
+	
+    
 }
 
 //-----------------------------------------------------------------------------

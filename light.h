@@ -6,7 +6,6 @@
 //=============================================================================
 #pragma once
 
-
 //*****************************************************************************
 // É}ÉNÉçíËã`
 //*****************************************************************************
@@ -16,9 +15,10 @@
 //*****************************************************************************
 void InitLight(void);
 void UpdateLight(void);
-void DrawLightShadowMaps();
 
 void SetLightData(int index, LIGHT *light);
+void SetLightMatrices(LIGHT* light);
+void SetLightMatrices(int index);
 void SetFogData(FOG *fog);
 BOOL GetFogEnable(void);
 

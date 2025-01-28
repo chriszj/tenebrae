@@ -140,6 +140,7 @@
     <ClInclude Include="camera.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="debugproc.h" />
+    <ClInclude Include="depthrenderer.h" />
     <ClInclude Include="depthshaderclass.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="fade.h" />
@@ -176,6 +177,7 @@
     <ClCompile Include="camera.cpp" />
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="debugproc.cpp" />
+    <ClCompile Include="depthrenderer.cpp" />
     <ClCompile Include="depthshaderclass.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="fade.cpp" />

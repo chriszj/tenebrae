@@ -125,10 +125,6 @@ static FUCHI			g_Fuchi;
 
 static float g_ClearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };	// 背景色
 
-static DepthShaderClass* g_depthShaderClass;
-static RenderTextureClass* g_renderTextureClass;
-static ShadowShaderClass* g_ShadowShaderClass;
-
 
 ID3D11Device* GetDevice( void )
 {
@@ -580,7 +576,29 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 
 	g_ImmediateContext->PSSetSamplers( 0, 1, &samplerState );
 
+	// サンプラーステート設定
+	ZeroMemory(&samplerDesc, sizeof(samplerDesc));
+	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+	samplerDesc.MipLODBias = 0.0f;
+	samplerDesc.MaxAnisotropy = 1;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.BorderColor[0] = 0;
+	samplerDesc.BorderColor[1] = 0;
+	samplerDesc.BorderColor[2] = 0;
+	samplerDesc.BorderColor[3] = 0;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
+	ID3D11SamplerState* samplerStateClamp = NULL;
+	g_D3DDevice->CreateSamplerState(&samplerDesc, &samplerStateClamp);
+
+	g_ImmediateContext->PSSetSamplers(1, 1, &samplerStateClamp);
 
 	// 頂点シェーダコンパイル・生成
 	ID3DBlob* pErrorBlob;
@@ -709,14 +727,6 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	material.Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 	SetMaterial(material);
 
-	g_depthShaderClass = new DepthShaderClass();
-	g_renderTextureClass = new RenderTextureClass();
-	g_ShadowShaderClass = new ShadowShaderClass();
-
-	g_depthShaderClass->Initialize(GetDevice(), hWnd);
-	g_renderTextureClass->Initialize(GetDevice(), 1024, 1024, 100, 1, 1);
-	g_ShadowShaderClass->Initialize(GetDevice(), hWnd);
-
 	return S_OK;
 }
 
@@ -832,103 +842,28 @@ void DebugTextOut(char* text, int x, int y)
 #endif
 }
 
-bool SetupRenderToTexture(LIGHT *lightsource )
+void SetRenderShaders() 
 {
 
-	XMMATRIX translateMatrix, lightViewMatrix, lightProjectionMatrix;
-	bool result;
-
-
-	// Set the render target to be the render to texture.  Also clear the render to texture.
-	g_renderTextureClass->SetRenderTarget(GetDeviceContext());
-	g_renderTextureClass->ClearRenderTarget(GetDeviceContext(), 0.0f, 0.0f, 0.0f, 1.0f);
-
-	// Get the view and orthographic matrices from the light object.
-	lightViewMatrix = XMLoadFloat4x4(&lightsource->View.mtxView);
-	lightProjectionMatrix = XMLoadFloat4x4(&lightsource->View.mtxProjection);
-
-	// Setup the translation matrix for the cube model.
-	translateMatrix = XMMatrixTranslation(-2.0f, 2.0f, 0.0f);
-
-	// Render the cube model using the depth shader.
-	//m_CubeModel->Render(m_Direct3D->GetDeviceContext());
-
-	result = g_depthShaderClass->Render(GetDeviceContext(), 0, translateMatrix, lightViewMatrix, lightProjectionMatrix);
-	if (!result)
-	{
-		return false;
-	}
-
-	// Reset the render target back to the original back buffer and not the render to texture anymore.  Also reset the viewport back to the original.
-	//GetDevice->SetBackBufferRenderTarget();
-	//m_Direct3D->ResetViewport();
-
-	return true;
+	// シェーダ設定
+	g_ImmediateContext->VSSetShader(g_VertexShader, NULL, 0);
+	g_ImmediateContext->PSSetShader(g_PixelShader, NULL, 0);
 
 }
 
-bool SetupShadowRender() 
+void SetRenderTarget() 
 {
 
-	XMMATRIX worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix;
-	bool result;
+	// ビューポート設定
+	D3D11_VIEWPORT vp;
+	vp.Width = (FLOAT)SCREEN_WIDTH;
+	vp.Height = (FLOAT)SCREEN_HEIGHT;
+	vp.MinDepth = 0.0f;
+	vp.MaxDepth = 1.0f;
+	vp.TopLeftX = 0;
+	vp.TopLeftY = 0;
+	g_ImmediateContext->RSSetViewports(1, &vp);
 
-	CAMERA* 
-
-	// Clear the buffers to begin the scene.
-	m_Direct3D->BeginScene(0.0f, 0.0f, 0.0f, 1.0f);
-
-	// Get the world, view, and projection matrices from the camera and d3d objects.
-	m_Direct3D->GetWorldMatrix(worldMatrix);
-	m_Camera->GetViewMatrix(viewMatrix);
-	m_Direct3D->GetProjectionMatrix(projectionMatrix);
-
-	// Get the view and projection matrices from the view point object.
-	m_Light->GetViewMatrix(lightViewMatrix);
-	m_Light->GetProjectionMatrix(lightProjectionMatrix);
-
-	// Setup the translation matrix for the cube model.
-	worldMatrix = XMMatrixTranslation(-2.0f, 2.0f, 0.0f);
-
-	// Render the cube model using the shadow shader.
-	m_CubeModel->Render(m_Direct3D->GetDeviceContext());
-
-	result = m_ShadowShader->Render(m_Direct3D->GetDeviceContext(), m_CubeModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix,
-		m_CubeModel->GetTexture(), m_RenderTexture->GetShaderResourceView(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetPosition(), m_shadowMapBias);
-	if (!result)
-	{
-		return false;
-	}
-
-	// Setup the translation matrix for the sphere model.
-	worldMatrix = XMMatrixTranslation(2.0f, 2.0f, 0.0f);
-
-	// Render the sphere model using the shadow shader.
-	m_SphereModel->Render(m_Direct3D->GetDeviceContext());
-
-	result = m_ShadowShader->Render(m_Direct3D->GetDeviceContext(), m_SphereModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix,
-		m_SphereModel->GetTexture(), m_RenderTexture->GetShaderResourceView(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetPosition(), m_shadowMapBias);
-	if (!result)
-	{
-		return false;
-	}
-
-	// Setup the translation matrix for the ground model.
-	worldMatrix = XMMatrixTranslation(0.0f, 1.0f, 0.0f);
-
-	// Render the ground model using the shadow shader.
-	m_GroundModel->Render(m_Direct3D->GetDeviceContext());
-
-	result = m_ShadowShader->Render(m_Direct3D->GetDeviceContext(), m_GroundModel->GetIndexCount(), worldMatrix, viewMatrix, projectionMatrix, lightViewMatrix, lightProjectionMatrix,
-		m_GroundModel->GetTexture(), m_RenderTexture->GetShaderResourceView(), m_Light->GetAmbientColor(), m_Light->GetDiffuseColor(), m_Light->GetPosition(), m_shadowMapBias);
-	if (!result)
-	{
-		return false;
-	}
-
-	// Present the rendered scene to the screen.
-	m_Direct3D->EndScene();
-
-	return true;
+	g_ImmediateContext->OMSetRenderTargets(1, &g_RenderTargetView, g_DepthStencilView);
 
 }
