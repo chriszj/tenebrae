@@ -49,7 +49,7 @@ static PLAYER				g_Player;						// ÉvÉåÉCÉÑÅ[
 long lastMouseX;
 long lastMouseY;
 
-XMFLOAT3 lightOffset;
+XMFLOAT3 lightOffset = {-9.0f, 6.0f, 0.0f};
 
 static MAPOBJECT* g_CheckPoints;
 

@@ -134,7 +134,7 @@ void UpdateBullet(void)
 			g_Player.viewPoint.y = g_Player.pos.y + (sin(g_Player.viewDirY) * 50);*/
 
 			// 影の位置設定
-			SetPositionShadow(g_Bullet[i].shadowIdx, XMFLOAT3(g_Bullet[i].pos.x, 0.1f, g_Bullet[i].pos.z));
+			//SetPositionShadow(g_Bullet[i].shadowIdx, XMFLOAT3(g_Bullet[i].pos.x, 0.1f, g_Bullet[i].pos.z));
 
 
 			// フィールドの外に出たら弾を消す処理
@@ -156,11 +156,11 @@ void UpdateBullet(void)
 
 				if (CollisionBC(g_Bullet[i].pos, enemies[e].pos, g_Bullet[i].fHeight, ENEMY_SIZE)) {
 
-					ReleaseShadow(enemies[e].shadowIdx);
+					//ReleaseShadow(enemies[e].shadowIdx);
 					enemies[e].use = FALSE;
 
 					g_Bullet[i].bUse = FALSE;
-					ReleaseShadow(g_Bullet[i].shadowIdx);
+					//ReleaseShadow(g_Bullet[i].shadowIdx);
 
 					PlaySound(SOUND_LABEL_SE_hit000);
 				}
@@ -318,7 +318,7 @@ int SetBullet(XMFLOAT3 pos, XMFLOAT3 rot, XMFLOAT2 dir)
 			g_Bullet[nCntBullet].bUse = TRUE;
 
 			// 影の設定
-			g_Bullet[nCntBullet].shadowIdx = CreateShadow(g_Bullet[nCntBullet].pos, 0.5f, 0.5f);
+			//g_Bullet[nCntBullet].shadowIdx = CreateShadow(g_Bullet[nCntBullet].pos, 0.5f, 0.5f);
 
 			nIdxBullet = nCntBullet;
 

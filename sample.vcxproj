@@ -141,7 +141,6 @@
     <ClInclude Include="collision.h" />
     <ClInclude Include="debugproc.h" />
     <ClInclude Include="depthrenderer.h" />
-    <ClInclude Include="depthshaderclass.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="fade.h" />
     <ClInclude Include="field.h" />
@@ -162,11 +161,9 @@
     <ClInclude Include="player.h" />
     <ClInclude Include="pugixml.hpp" />
     <ClInclude Include="renderer.h" />
-    <ClInclude Include="rendertextureclass.h" />
     <ClInclude Include="result.h" />
     <ClInclude Include="score.h" />
     <ClInclude Include="shadow.h" />
-    <ClInclude Include="shadowshaderclass.h" />
     <ClInclude Include="sound.h" />
     <ClInclude Include="sprite.h" />
     <ClInclude Include="title.h" />
@@ -178,7 +175,6 @@
     <ClCompile Include="collision.cpp" />
     <ClCompile Include="debugproc.cpp" />
     <ClCompile Include="depthrenderer.cpp" />
-    <ClCompile Include="depthshaderclass.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="fade.cpp" />
     <ClCompile Include="field.cpp" />
@@ -198,11 +194,9 @@
     <ClCompile Include="player.cpp" />
     <ClCompile Include="pugixml.cpp" />
     <ClCompile Include="renderer.cpp" />
-    <ClCompile Include="rendertextureclass.cpp" />
     <ClCompile Include="result.cpp" />
     <ClCompile Include="score.cpp" />
     <ClCompile Include="shadow.cpp" />
-    <ClCompile Include="shadowshaderclass.cpp" />
     <ClCompile Include="sound.cpp" />
     <ClCompile Include="sprite.cpp" />
     <ClCompile Include="title.cpp" />

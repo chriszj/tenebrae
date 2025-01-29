@@ -27,7 +27,7 @@
 #define	VALUE_ROTATE		(XM_PI * 0.02f)				// 回転量
 
 #define ENEMY_SHADOW_SIZE	(0.4f)						// 影の大きさ
-#define ENEMY_OFFSET_Y		(7.0f)						// エネミーの足元をあわせる
+#define ENEMY_OFFSET_Y		(6.0f)						// エネミーの足元をあわせる
 
 
 //*****************************************************************************
@@ -43,38 +43,38 @@ static ENEMY			g_Enemy[MAX_ENEMY];				// エネミー
 int g_Enemy_load = 0;
 
 static INTERPOLATION_DATA g_MoveTbl0[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(0.0f, ENEMY_OFFSET_Y,  20.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
-	{ XMFLOAT3(-50.0f, ENEMY_OFFSET_Y,  20.0f), XMFLOAT3(0.0f, 6.28f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
-	{ XMFLOAT3(-10.0f, ENEMY_OFFSET_Y, 20.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 0.5f },
-
+	{ XMFLOAT3(-25.0f, ENEMY_OFFSET_Y,  114.0f), XMFLOAT3(0.0f, XMConvertToRadians(90.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
+	{ XMFLOAT3(30.0f,  ENEMY_OFFSET_Y,  114.0f), XMFLOAT3(0.0f, XMConvertToRadians(-90.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
+	{ XMFLOAT3( 30.0f, ENEMY_OFFSET_Y,  114.0f), XMFLOAT3(0.0f, XMConvertToRadians(-90.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
+	{ XMFLOAT3(-25.0f, ENEMY_OFFSET_Y,  114.0f), XMFLOAT3(0.0f, XMConvertToRadians(90.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 }
 };
 
 static INTERPOLATION_DATA g_MoveTbl1[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(0.0f, ENEMY_OFFSET_Y,  20.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
-	{ XMFLOAT3(50.0f, ENEMY_OFFSET_Y,  20.0f), XMFLOAT3(0.0f, 6.28f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
-	{ XMFLOAT3(-10.0f, ENEMY_OFFSET_Y, 20.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 0.5f },
-
+	{ XMFLOAT3(20.0f, ENEMY_OFFSET_Y,  -30.0f), XMFLOAT3(0.0f, XMConvertToRadians(45.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
+	{ XMFLOAT3(20.0f, ENEMY_OFFSET_Y,  36.0f), XMFLOAT3(0.0f, XMConvertToRadians(-45.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
+	{ XMFLOAT3(-20.0f, ENEMY_OFFSET_Y,  36.0f), XMFLOAT3(0.0f, XMConvertToRadians(90.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
+	{ XMFLOAT3(-20.0f, ENEMY_OFFSET_Y, -30.0f), XMFLOAT3(0.0f, XMConvertToRadians(90.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 }
 };
 
 static INTERPOLATION_DATA g_MoveTbl2[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(30.0f, ENEMY_OFFSET_Y,  20.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
-	{ XMFLOAT3(80.0f, ENEMY_OFFSET_Y,  20.0f), XMFLOAT3(0.0f, 6.28f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
-	{ XMFLOAT3(50.0f, ENEMY_OFFSET_Y, -20.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 0.5f },
-
+	{ XMFLOAT3(-100.0f, ENEMY_OFFSET_Y,  266.0f), XMFLOAT3(0.0f, XMConvertToRadians(-90.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
+	{ XMFLOAT3(-100.0f, ENEMY_OFFSET_Y,  323.0f), XMFLOAT3(0.0f, XMConvertToRadians(180.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
+	{ XMFLOAT3(-145.0f, ENEMY_OFFSET_Y,  323.0f), XMFLOAT3(0.0f, XMConvertToRadians(90.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
+	{ XMFLOAT3(-145.0f, ENEMY_OFFSET_Y, 266.0f), XMFLOAT3(0.0f, XMConvertToRadians(0.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 }
 };
 
 static INTERPOLATION_DATA g_MoveTbl3[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(100.0f, ENEMY_OFFSET_Y,  120.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
-	{ XMFLOAT3(120.0f, ENEMY_OFFSET_Y,  80.0f), XMFLOAT3(0.0f, 6.28f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
-	{ XMFLOAT3(150.0f, ENEMY_OFFSET_Y, 90.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 0.5f },
-
+	{ XMFLOAT3(66.0f, ENEMY_OFFSET_Y,  440.0f), XMFLOAT3(0.0f, XMConvertToRadians(0.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
+	{ XMFLOAT3(66.0f,  ENEMY_OFFSET_Y,  490.0f), XMFLOAT3(0.0f, XMConvertToRadians(180.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
+	{ XMFLOAT3(66.0f, ENEMY_OFFSET_Y,  490.0f), XMFLOAT3(0.0f, XMConvertToRadians(180.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
+	{ XMFLOAT3(66.0f, ENEMY_OFFSET_Y,  440.0f), XMFLOAT3(0.0f, XMConvertToRadians(0.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 }
 };
 
 static INTERPOLATION_DATA g_MoveTbl4[] = {	// pos, rot, scl, frame
-	{ XMFLOAT3(0.0f, ENEMY_OFFSET_Y,  -60.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 2 },
-	{ XMFLOAT3(50.0f, ENEMY_OFFSET_Y, -50.0f), XMFLOAT3(0.0f, 6.28f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
-	{ XMFLOAT3(-10.0f, ENEMY_OFFSET_Y,-20.0f), XMFLOAT3(0.0f, 0.0f, 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 0.5f },
-
+	{ XMFLOAT3(190.0f, ENEMY_OFFSET_Y,  565.0f), XMFLOAT3(0.0f, XMConvertToRadians(0.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
+	{ XMFLOAT3(190.0f,  ENEMY_OFFSET_Y,  615.0f), XMFLOAT3(0.0f, XMConvertToRadians(180.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
+	{ XMFLOAT3(190.0f, ENEMY_OFFSET_Y,  615.0f), XMFLOAT3(0.0f, XMConvertToRadians(180.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 },
+	{ XMFLOAT3(190.0f, ENEMY_OFFSET_Y,  565.0f), XMFLOAT3(0.0f, XMConvertToRadians(0.0f), 0.0f), XMFLOAT3(0.3f, 0.3f, 0.3f), 60 * 1 }
 };
 
 
@@ -153,7 +153,7 @@ HRESULT InitEnemy(void)
 
 		XMFLOAT3 pos = g_Enemy[i].pos;
 		pos.y -= (ENEMY_OFFSET_Y - 0.1f);
-		g_Enemy[i].shadowIdx = CreateShadow(pos, ENEMY_SHADOW_SIZE, ENEMY_SHADOW_SIZE);
+		//g_Enemy[i].shadowIdx = CreateShadow(pos, ENEMY_SHADOW_SIZE, ENEMY_SHADOW_SIZE);
 
 		g_Enemy[i].time = 0.0f;			// 線形補間用のタイマーをクリア
 		g_Enemy[i].tblNo = 0;			// 再生する行動データテーブルNoをセット
@@ -389,7 +389,7 @@ void UpdateEnemy(void)
 			// 影もプレイヤーの位置に合わせる
 			XMFLOAT3 pos = g_Enemy[i].pos;
 			pos.y -= (ENEMY_OFFSET_Y - 0.1f);
-			SetPositionShadow(g_Enemy[i].shadowIdx, pos);
+			//SetPositionShadow(g_Enemy[i].shadowIdx, pos);
 
 		}
 	}

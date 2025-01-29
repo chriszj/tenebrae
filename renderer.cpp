@@ -6,9 +6,6 @@
 //=============================================================================
 #include "main.h"
 #include "renderer.h"
-#include "depthshaderclass.h"
-#include "rendertextureclass.h"
-#include "shadowshaderclass.h"
 #include "camera.h"
 
 //デバッグ用画面テキスト出力を有効にする

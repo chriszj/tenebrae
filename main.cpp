@@ -542,9 +542,9 @@ void Draw(void)
 
 			if (renderingPass > 1) {
 				
-				float clearcolor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+				//float clearcolor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
-				SetClearColor(clearcolor);
+				//SetClearColor(clearcolor);
 
 				SetDepthRenderTarget(GetDeviceContext());
 				ClearDepthRenderTarget(GetDeviceContext(), 0.0f, 0.0f, 0.0f, 0.0f);
@@ -558,17 +558,17 @@ void Draw(void)
 			}
 			else {
 
+
+				SetRenderTarget();
+				SetRenderShaders();
+
+
 				ID3D11ShaderResourceView* depthTexture = GetDepthRendererShaderResourceView();
 
 				//D3DX11SaveTextureToFileA(GetDeviceContext(), , "", "");
 
 				// レンディングした深さテクスチャを渡す
 				GetDeviceContext()->PSSetShaderResources(1, 1, &depthTexture);
-
-				SetRenderTarget();
-				SetRenderShaders();
-
-				
 
 				// プレイヤー視点
 				XMFLOAT3 viewpointPos = GetPlayer()->viewPoint;
@@ -593,7 +593,9 @@ void Draw(void)
 			// エネミーの描画処理
 			DrawEnemy();
 
-			DrawBullet();
+			//　シャドウマッピングできないもの
+			if(renderingPass <= 1)
+				DrawBullet();
 
 			renderingPass -=1;
 
