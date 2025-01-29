@@ -38,7 +38,8 @@ struct LIGHTFLAGS
 {
 	int			Type;		//ライトタイプ（enum LIGHT_TYPE）
 	int         OnOff;		//ライトのオンorオフスイッチ
-	int			Dummy[2];
+	int			CastShadows;
+	int         Dummy;
 };
 
 // ライト用定数バッファ構造体
@@ -96,6 +97,8 @@ static ID3D11InputLayout*		g_VertexLayout = NULL;
 static ID3D11Buffer*			g_WorldBuffer = NULL;
 static ID3D11Buffer*			g_ViewBuffer = NULL;
 static ID3D11Buffer*			g_ProjectionBuffer = NULL;
+static ID3D11Buffer*			g_LightViewBuffer = NULL;
+static ID3D11Buffer*			g_LightProjectionBuffer = NULL;
 static ID3D11Buffer*			g_MaterialBuffer = NULL;
 static ID3D11Buffer*			g_LightBuffer = NULL;
 static ID3D11Buffer*			g_FogBuffer = NULL;
@@ -294,6 +297,24 @@ void SetProjectionMatrix( XMMATRIX *ProjectionMatrix )
 	GetDeviceContext()->UpdateSubresource(g_ProjectionBuffer, 0, NULL, &projection, 0, 0);
 }
 
+void SetLightViewMatrix(XMMATRIX* lightViewMatrix) 
+{
+	XMMATRIX view;
+	view = *lightViewMatrix;
+	view = XMMatrixTranspose(view);
+	
+	GetDeviceContext()->UpdateSubresource(g_LightViewBuffer, 0, NULL, &view, 0, 0);
+}
+
+void SetLightProjectionMatrix(XMMATRIX* lightProjectionMatrix) 
+{
+	XMMATRIX projection;
+	projection = *lightProjectionMatrix;
+	projection = XMMatrixTranspose(projection);
+
+	GetDeviceContext()->UpdateSubresource(g_LightProjectionBuffer, 0, NULL, &projection, 0, 0);
+}
+
 void SetMaterial( MATERIAL material )
 {
 	g_Material.Diffuse = material.Diffuse;
@@ -327,6 +348,7 @@ void SetLight(int index, LIGHT* pLight)
 	g_Light.Ambient[index] = pLight->Ambient;
 	g_Light.Flags[index].Type = pLight->Type;
 	g_Light.Flags[index].OnOff = pLight->Enable;
+	g_Light.Flags[index].CastShadows = pLight->CastShadows;
 	g_Light.Attenuation[index].x = pLight->Attenuation;
 
 	SetLightBuffer();
@@ -673,6 +695,16 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	g_ImmediateContext->VSSetConstantBuffers(2, 1, &g_ProjectionBuffer);
 	g_ImmediateContext->PSSetConstantBuffers(2, 1, &g_ProjectionBuffer);
 
+	//ライトビューマトリクス
+	g_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &g_LightViewBuffer);
+	g_ImmediateContext->VSSetConstantBuffers(8, 1, &g_LightViewBuffer);
+	g_ImmediateContext->PSSetConstantBuffers(8, 1, &g_LightViewBuffer);
+
+	//ライトプロジェクションマトリクス
+	g_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &g_LightProjectionBuffer);
+	g_ImmediateContext->VSSetConstantBuffers(9, 1, &g_LightProjectionBuffer);
+	g_ImmediateContext->PSSetConstantBuffers(9, 1, &g_LightProjectionBuffer);
+
 	//マテリアル情報
 	hBufferDesc.ByteWidth = sizeof(MATERIAL_CBUFFER);
 	g_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &g_MaterialBuffer);
@@ -750,6 +782,8 @@ void UninitRenderer(void)
 	if (g_WorldBuffer)			g_WorldBuffer->Release();
 	if (g_ViewBuffer)			g_ViewBuffer->Release();
 	if (g_ProjectionBuffer)		g_ProjectionBuffer->Release();
+	if (g_LightViewBuffer)			g_LightViewBuffer->Release();
+	if (g_LightProjectionBuffer)	g_LightProjectionBuffer->Release();
 	if (g_MaterialBuffer)		g_MaterialBuffer->Release();
 	if (g_LightBuffer)			g_LightBuffer->Release();
 	if (g_FogBuffer)			g_FogBuffer->Release();
@@ -844,7 +878,6 @@ void DebugTextOut(char* text, int x, int y)
 
 void SetRenderShaders() 
 {
-
 	// シェーダ設定
 	g_ImmediateContext->VSSetShader(g_VertexShader, NULL, 0);
 	g_ImmediateContext->PSSetShader(g_PixelShader, NULL, 0);

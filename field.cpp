@@ -92,16 +92,16 @@ HRESULT InitField(void)
 	// 頂点バッファの作成
 	MakeVertexField();
 
-	LoadModel(MODEL_FIELD_WALL1, &g_Field.fieldWall1Model);
+	/*LoadModel(MODEL_FIELD_WALL1, &g_Field.fieldWall1Model);
 	LoadModel(MODEL_FIELD_WALL2, &g_Field.fieldWall2Model);
 	LoadModel(MODEL_FIELD_PILLARS, &g_Field.fieldPillarsModel);
 	LoadModel(MODEL_FIELD_PILLARCORNERS, &g_Field.fieldPillarCornersModel);
-	LoadModel(MODEL_FIELD_WALLDOORS, &g_Field.fieldWallDoorsModel);
+	LoadModel(MODEL_FIELD_WALLDOORS, &g_Field.fieldWallDoorsModel);*/
 	LoadModel(MODEL_FIELD_GROUND, &g_Field.fieldWallGroundModel);
-	/*LoadModel(MODEL_FIELD_PROPS1, &g_Field.fieldWallProps1Model);
+	LoadModel(MODEL_FIELD_PROPS1, &g_Field.fieldWallProps1Model);
 	LoadModel(MODEL_FIELD_PROPS2, &g_Field.fieldWallProps2Model);
 	LoadModel(MODEL_FIELD_PROPS3, &g_Field.fieldWallProps3Model);
-	LoadModel(MODEL_FIELD_PROPS4, &g_Field.fieldWallProps4Model);*/
+	LoadModel(MODEL_FIELD_PROPS4, &g_Field.fieldWallProps4Model);
 	LoadModel(MODEL_FIELD_COLLIDERS, &g_Field.fieldColliders);
 
 	ParseMap(g_Tilesets, g_MapTileLayers, g_ObjectGroups, "data/MAP/level-0.tmx");
@@ -153,16 +153,16 @@ void UninitField(void)
 	//		g_Texture[i] = NULL;
 	//	}
 	//}
-	UnloadModel(&g_Field.fieldWall1Model);
+	/*UnloadModel(&g_Field.fieldWall1Model);
 	UnloadModel(&g_Field.fieldWall2Model);
 	UnloadModel(&g_Field.fieldPillarsModel);
 	UnloadModel(&g_Field.fieldPillarCornersModel);
-	UnloadModel(&g_Field.fieldWallDoorsModel);
+	UnloadModel(&g_Field.fieldWallDoorsModel);*/
 	UnloadModel(&g_Field.fieldWallGroundModel);
-	/*UnloadModel(&g_Field.fieldWallProps1Model);
+	UnloadModel(&g_Field.fieldWallProps1Model);
 	UnloadModel(&g_Field.fieldWallProps2Model);
 	UnloadModel(&g_Field.fieldWallProps3Model);
-	UnloadModel(&g_Field.fieldWallProps4Model);*/
+	UnloadModel(&g_Field.fieldWallProps4Model);
 
 	g_Field.load = FALSE;
 
@@ -253,16 +253,16 @@ void DrawField(void)
 
 	// ポリゴン描画
 	//GetDeviceContext()->Draw(4, 0);		// 4頂点分を0番目の頂点番号から描画
-	DrawModel(&g_Field.fieldWall1Model);
+	/*DrawModel(&g_Field.fieldWall1Model);
 	DrawModel(&g_Field.fieldWall2Model);
 	DrawModel(&g_Field.fieldPillarsModel);
 	DrawModel(&g_Field.fieldPillarCornersModel);
-	DrawModel(&g_Field.fieldWallDoorsModel);
+	DrawModel(&g_Field.fieldWallDoorsModel);*/
 	DrawModel(&g_Field.fieldWallGroundModel);
-	/*DrawModel(&g_Field.fieldWallProps1Model);
+	DrawModel(&g_Field.fieldWallProps1Model);
 	DrawModel(&g_Field.fieldWallProps2Model);
 	DrawModel(&g_Field.fieldWallProps3Model);
-	DrawModel(&g_Field.fieldWallProps4Model);*/
+	DrawModel(&g_Field.fieldWallProps4Model);
 
 	// 壁の当たり判定の表示
 	if (!MAP_DRAW_DEBUG_WALLS)

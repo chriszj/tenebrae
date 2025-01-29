@@ -542,8 +542,12 @@ void Draw(void)
 
 			if (renderingPass > 1) {
 				
-				//SetDepthRenderTarget(GetDeviceContext());
-				//ClearDepthRenderTarget(GetDeviceContext(), 0.0f, 0.0f, 0.0f, 0.0f);
+				float clearcolor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+				SetClearColor(clearcolor);
+
+				SetDepthRenderTarget(GetDeviceContext());
+				ClearDepthRenderTarget(GetDeviceContext(), 0.0f, 0.0f, 0.0f, 0.0f);
 				
 				LIGHT* light = GetLightData(1);
 
@@ -554,8 +558,17 @@ void Draw(void)
 			}
 			else {
 
-				//SetRenderTarget();
-				//SetRenderShaders();
+				ID3D11ShaderResourceView* depthTexture = GetDepthRendererShaderResourceView();
+
+				//D3DX11SaveTextureToFileA(GetDeviceContext(), , "", "");
+
+				// レンディングした深さテクスチャを渡す
+				GetDeviceContext()->PSSetShaderResources(1, 1, &depthTexture);
+
+				SetRenderTarget();
+				SetRenderShaders();
+
+				
 
 				// プレイヤー視点
 				XMFLOAT3 viewpointPos = GetPlayer()->viewPoint;
@@ -564,8 +577,8 @@ void Draw(void)
 				//pos.z -= 5;
 
 				//pos.y = 0.0f;			// カメラ酔いを防ぐためにクリアしている
-				//SetFPSCameraAt(viewpointPos, pos);
-				//SetCamera();
+				SetFPSCameraAt(viewpointPos, pos);
+				SetCamera();
 			}
 
 			// フィールドの描画処理

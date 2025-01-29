@@ -333,12 +333,14 @@ void UpdatePlayer(void)
 		pos.z += lightOffset.z;
 
 		light->Position = pos;
-		light->Diffuse = XMFLOAT4(1.5f, 1.5f, 1.5f, 1.0f);
+		light->Diffuse = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		light->Ambient = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 		light->Type = LIGHT_TYPE_POINT;
 		light->Enable = TRUE;
 		light->View.at = cam->at;
+		//light->View.rot = lightOffset;
 		light->View.up = cam->up;
+		light->CastShadows = TRUE;
 		SetLightData(1, light);
 
 	}

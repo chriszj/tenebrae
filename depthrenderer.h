@@ -21,3 +21,4 @@ void UninitDepthRenderer(void);
 void SetDepthRenderShaders(ID3D11DeviceContext* device);
 void SetDepthRenderTarget(ID3D11DeviceContext* deviceContext);
 void ClearDepthRenderTarget(ID3D11DeviceContext* deviceContext, float red, float green, float blue, float alpha);
+ID3D11ShaderResourceView* GetDepthRendererShaderResourceView(void);

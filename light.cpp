@@ -10,7 +10,7 @@
 
 #define LIGHT_VIEW_ANGLE  (XMConvertToRadians(45.0f))	
 #define LIGHT_VIEW_ASPECT ((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT)
-#define LIGHT_VIEW_NEAR_Z  3.0f
+#define LIGHT_VIEW_NEAR_Z  1.0f
 #define LIGHT_VIEW_FAR_Z   100000.0f
 
 //*****************************************************************************
@@ -106,7 +106,7 @@ void SetLightMatrices(LIGHT* light)
 	// ビューマトリックス設定
 	XMMATRIX mtxView;
 	mtxView = XMMatrixLookAtLH(XMLoadFloat3(&light->Position), XMLoadFloat3(&light->View.at), XMLoadFloat3(&light->View.up));
-	SetViewMatrix(&mtxView);
+	SetLightViewMatrix(&mtxView);
 	XMStoreFloat4x4(&light->View.mtxView, mtxView);
 
 	XMMATRIX mtxInvView;
@@ -117,7 +117,7 @@ void SetLightMatrices(LIGHT* light)
 	XMMATRIX mtxProjection;
 	mtxProjection = XMMatrixPerspectiveFovLH(LIGHT_VIEW_ANGLE, LIGHT_VIEW_ASPECT, LIGHT_VIEW_NEAR_Z, LIGHT_VIEW_FAR_Z);
 
-	SetProjectionMatrix(&mtxProjection);
+	SetLightProjectionMatrix(&mtxProjection);
 	XMStoreFloat4x4(&light->View.mtxProjection, mtxProjection);
 }
 

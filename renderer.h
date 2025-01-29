@@ -95,6 +95,7 @@ struct LIGHT {
 	float		Attenuation;// 減衰率
 	int			Type;		// ライト種別・有効フラグ
 	int			Enable;		// ライト種別・有効フラグ
+	int         CastShadows;
 	LIGHTVIEW   View;
 };
 
@@ -127,6 +128,9 @@ void SetWorldViewProjection2D( void );
 void SetWorldMatrix( XMMATRIX *WorldMatrix );
 void SetViewMatrix( XMMATRIX *ViewMatrix );
 void SetProjectionMatrix( XMMATRIX *ProjectionMatrix );
+
+void SetLightViewMatrix(XMMATRIX* lightViewMatrix);
+void SetLightProjectionMatrix(XMMATRIX* lightProjectionMatrix);
 
 void SetMaterial( MATERIAL material );
 
