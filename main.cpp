@@ -64,7 +64,7 @@ ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
 long g_MouseX = 0;
 long g_MouseY = 0;
 
-int	g_Mode = MODE_GAME;					// 起動時の画面を設定
+int	g_Mode = MODE_TITLE;					// 起動時の画面を設定
 
 #ifdef _DEBUG
 int		g_CountFPS;							// FPSカウンタ
@@ -539,8 +539,10 @@ void Draw(void)
 			// Z比較あり
 			SetDepthEnable(TRUE);
 
+			LIGHT* light = GetLightData(1);
 
-			if (renderingPass > 1) {
+
+			if (renderingPass > 1 && light->Enable) {
 				
 				//float clearcolor[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
@@ -549,7 +551,7 @@ void Draw(void)
 				SetDepthRenderTarget(GetDeviceContext());
 				ClearDepthRenderTarget(GetDeviceContext(), 0.0f, 0.0f, 0.0f, 0.0f);
 				
-				LIGHT* light = GetLightData(1);
+				
 
 				SetLightMatrices(light);
 

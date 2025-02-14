@@ -28,7 +28,7 @@
 #define	VALUE_ROTATE		(XM_PI * 0.02f)					// 回転量
 
 #define PLAYER_SHADOW_SIZE	(0.4f)							// 影の大きさ
-#define PLAYER_OFFSET_Y		(5.0f)							// プレイヤーの足元をあわせる
+#define PLAYER_OFFSET_Y		(8.0f)							// プレイヤーの足元をあわせる
 
 #define PLAYER_COLLIDER_WIDTH       (5.0f)
 #define PLAYER_COLLIDER_HEIGHT      (5.0f)

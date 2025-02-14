@@ -53,10 +53,12 @@ struct FIELD
 	DX11_MODEL      fieldPillarCornersModel;
 	DX11_MODEL      fieldWallDoorsModel;
 	DX11_MODEL      fieldWallGroundModel;
+	DX11_MODEL      fieldWallCeilingModel;
 	DX11_MODEL      fieldWallProps1Model;
 	DX11_MODEL      fieldWallProps2Model;
 	DX11_MODEL      fieldWallProps3Model;
 	DX11_MODEL      fieldWallProps4Model;
+	DX11_MODEL		fieldWallTorchesModel;
 	DX11_MODEL		fieldColliders;
 
 	XMFLOAT4		diffuse[MODEL_MAX_MATERIAL];	// ÉÇÉfÉãÇÃêF

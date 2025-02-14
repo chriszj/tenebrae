@@ -55,7 +55,7 @@ void InitLight(void)
 
 	// 並行光源の設定（世界を照らす光）
 	g_Light[0].Direction = XMFLOAT3( 0.0f, -1.0f, 0.0f );		// 光の向き
-	g_Light[0].Diffuse   = XMFLOAT4( 0.3f, 0.3f, 0.3f, 1.0f );	// 光の色
+	g_Light[0].Diffuse   = XMFLOAT4( 0.2f, 0.2f, 0.2f, 1.0f );	// 光の色
 	g_Light[0].Type = LIGHT_TYPE_DIRECTIONAL;					// 並行光源
 	g_Light[0].Enable = TRUE;									// このライトをON
 	SetLight(0, &g_Light[0]);									// これで設定している
@@ -95,6 +95,31 @@ void SetLightMatrices(LIGHT* light)
 {
 	
 
+	/*
+	XMMATRIX mtxTranslate, mtxWorld;
+
+		// ワールドマトリックスの初期化
+		mtxWorld = XMMatrixIdentity();
+
+		
+
+		
+
+		// 移動を反映
+		mtxTranslate = XMMatrixTranslation(light.pos.x, light.pos.y, light.pos.z);
+		mtxWorld = XMMatrixMultiply(mtxWorld, mtxTranslate);
+
+		// ワールドマトリックスの設定
+		SetWorldMatrix(&mtxWorld);
+
+		// ビューマトリックス設定
+		XMMATRIX mtxView;
+		mtxView = XMMatrixLookAtLH(XMLoadFloat3(&g_Camera.pos), XMLoadFloat3(&g_Camera.at), XMLoadFloat3(&g_Camera.up));
+		SetViewMatrix(&mtxView);
+		XMStoreFloat4x4(&g_Camera.mtxView, mtxView);
+	
+	*/
+
 	XMMATRIX mtxWorld = XMMatrixIdentity();
 	XMMATRIX mtxTranslate;
 
@@ -109,9 +134,9 @@ void SetLightMatrices(LIGHT* light)
 	SetLightViewMatrix(&mtxView);
 	XMStoreFloat4x4(&light->View.mtxView, mtxView);
 
-	XMMATRIX mtxInvView;
+	/*XMMATRIX mtxInvView;
 	mtxInvView = XMMatrixInverse(nullptr, mtxView);
-	XMStoreFloat4x4(&light->View.mtxInvView, mtxInvView);
+	XMStoreFloat4x4(&light->View.mtxInvView, mtxInvView);*/
 
 	// プロジェクションマトリックス設定
 	XMMATRIX mtxProjection;

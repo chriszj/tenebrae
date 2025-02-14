@@ -100,7 +100,7 @@ HRESULT InitRenderTarget(ID3D11Device* device, int textureWidth, int textureHeig
 	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc;
 	DXGI_FORMAT textureFormat;
 
-	// Set the texture format.
+
 	switch (format)
 	{
 		case 1:
@@ -115,14 +115,14 @@ HRESULT InitRenderTarget(ID3D11Device* device, int textureWidth, int textureHeig
 		}
 	}
 
-	// Store the width and height of the render texture.
+
 	g_textureWidth = textureWidth;
 	g_textureHeight = textureHeight;
 
-	// Initialize the render target texture description.
+
 	ZeroMemory(&textureDesc, sizeof(textureDesc));
 
-	// Setup the render target texture description.
+
 	textureDesc.Width = textureWidth;
 	textureDesc.Height = textureHeight;
 	textureDesc.MipLevels = 1;
@@ -134,42 +134,41 @@ HRESULT InitRenderTarget(ID3D11Device* device, int textureWidth, int textureHeig
 	textureDesc.CPUAccessFlags = 0;
 	textureDesc.MiscFlags = 0;
 
-	// Create the render target texture.
+
 	result = device->CreateTexture2D(&textureDesc, NULL, &g_renderTargetTexture);
 	if (FAILED(result))
 	{
 		return S_FALSE;
 	}
 
-	// Setup the description of the render target view.
+
 	renderTargetViewDesc.Format = textureDesc.Format;
 	renderTargetViewDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
 	renderTargetViewDesc.Texture2D.MipSlice = 0;
 
-	// Create the render target view.
 	result = device->CreateRenderTargetView(g_renderTargetTexture, &renderTargetViewDesc, &g_renderTargetView);
 	if (FAILED(result))
 	{
 		return S_FALSE;
 	}
 
-	// Setup the description of the shader resource view.
+
 	shaderResourceViewDesc.Format = textureDesc.Format;
 	shaderResourceViewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	shaderResourceViewDesc.Texture2D.MostDetailedMip = 0;
 	shaderResourceViewDesc.Texture2D.MipLevels = 1;
 
-	// Create the shader resource view.
+	
 	result = device->CreateShaderResourceView(g_renderTargetTexture, &shaderResourceViewDesc, &g_shaderResourceView);
 	if (FAILED(result))
 	{
 		return S_FALSE;
 	}
 
-	// Initialize the description of the depth buffer.
+
 	ZeroMemory(&depthBufferDesc, sizeof(depthBufferDesc));
 
-	// Set up the description of the depth buffer.
+	
 	depthBufferDesc.Width = textureWidth;
 	depthBufferDesc.Height = textureHeight;
 	depthBufferDesc.MipLevels = 1;
@@ -182,29 +181,29 @@ HRESULT InitRenderTarget(ID3D11Device* device, int textureWidth, int textureHeig
 	depthBufferDesc.CPUAccessFlags = 0;
 	depthBufferDesc.MiscFlags = 0;
 
-	// Create the texture for the depth buffer using the filled out description.
+	
 	result = device->CreateTexture2D(&depthBufferDesc, NULL, &g_depthStencilBuffer);
 	if (FAILED(result))
 	{
 		return S_FALSE;
 	}
 
-	// Initailze the depth stencil view description.
+	
 	ZeroMemory(&depthStencilViewDesc, sizeof(depthStencilViewDesc));
 
-	// Set up the depth stencil view description.
+	
 	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D;
 	depthStencilViewDesc.Texture2D.MipSlice = 0;
 
-	// Create the depth stencil view.
+	
 	result = device->CreateDepthStencilView(g_depthStencilBuffer, &depthStencilViewDesc, &g_depthStencilView);
 	if (FAILED(result))
 	{
 		return S_FALSE;
 	}
 
-	// Setup the viewport for rendering.
+	
 	g_viewport.Width = (float)textureWidth;
 	g_viewport.Height = (float)textureHeight;
 	g_viewport.MinDepth = 0.0f;
@@ -212,10 +211,10 @@ HRESULT InitRenderTarget(ID3D11Device* device, int textureWidth, int textureHeig
 	g_viewport.TopLeftX = 0;
 	g_viewport.TopLeftY = 0;
 
-	// Setup the projection matrix.
+	
 	g_projectionMatrix = XMMatrixPerspectiveFovLH((3.141592654f / 4.0f), ((float)textureWidth / (float)textureHeight), screenNear, screenDepth);
 
-	// Create an orthographic projection matrix for 2D rendering.
+	
 	g_orthoMatrix = XMMatrixOrthographicLH((float)textureWidth, (float)textureHeight, screenNear, screenDepth);
 
 	return TRUE;

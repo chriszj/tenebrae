@@ -3,16 +3,27 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "level-0.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
+        "level-0.tmx": {
+            "scale": 4,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 124.125,
+                "y": 27.375
+            }
+        }
     },
     "map.height": 30,
     "map.lastUsedFormat": "tmx",
     "openFiles": [
+        "level-0.tmx"
     ],
     "project": "tenebrae.tiled-project",
     "recentFiles": [
+        "level-0.tmx"
     ]
 }

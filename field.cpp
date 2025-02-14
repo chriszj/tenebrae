@@ -12,6 +12,7 @@
 #include "debugproc.h"
 #include "field.h"
 #include "pugixml.hpp"
+#include "light.h";
 
 
 //*****************************************************************************
@@ -23,10 +24,12 @@
 #define MODEL_FIELD_PILLARCORNERS		"data/MODEL/level/lvl-0-pillarscorner.obj"// 読み込むモデル名
 #define MODEL_FIELD_WALLDOORS		"data/MODEL/level/lvl-0-walldoors.obj"// 読み込むモデル名
 #define MODEL_FIELD_GROUND		"data/MODEL/level/lvl-0-ground.obj"// 読み込むモデル名
+#define MODEL_FIELD_CEILING		"data/MODEL/level/lvl-0-ceiling.obj"// 読み込むモデル名
 #define MODEL_FIELD_PROPS1		"data/MODEL/level/lvl-0-props1.obj"// 読み込むモデル名
 #define MODEL_FIELD_PROPS2		"data/MODEL/level/lvl-0-props2.obj"// 読み込むモデル名
 #define MODEL_FIELD_PROPS3		"data/MODEL/level/lvl-0-props3.obj"// 読み込むモデル名
 #define MODEL_FIELD_PROPS4		"data/MODEL/level/lvl-0-props4.obj"// 読み込むモデル名
+#define MODEL_FIELD_TORCHES		"data/MODEL/level/lvl-0-torches.obj"// 読み込むモデル名
 #define MODEL_FIELD_COLLIDERS	"data/MODEL/level/lvl-0-colliders.obj"// 読み込むモデル名
 
 #define TEXTURE_MAX		(1)						// テクスチャの数
@@ -98,10 +101,12 @@ HRESULT InitField(void)
 	LoadModel(MODEL_FIELD_PILLARCORNERS, &g_Field.fieldPillarCornersModel);
 	LoadModel(MODEL_FIELD_WALLDOORS, &g_Field.fieldWallDoorsModel);
 	LoadModel(MODEL_FIELD_GROUND, &g_Field.fieldWallGroundModel);
+	LoadModel(MODEL_FIELD_CEILING, &g_Field.fieldWallCeilingModel);
 	LoadModel(MODEL_FIELD_PROPS1, &g_Field.fieldWallProps1Model);
 	LoadModel(MODEL_FIELD_PROPS2, &g_Field.fieldWallProps2Model);
 	LoadModel(MODEL_FIELD_PROPS3, &g_Field.fieldWallProps3Model);
 	LoadModel(MODEL_FIELD_PROPS4, &g_Field.fieldWallProps4Model);
+	LoadModel(MODEL_FIELD_TORCHES, &g_Field.fieldWallTorchesModel);
 	LoadModel(MODEL_FIELD_COLLIDERS, &g_Field.fieldColliders);
 
 	ParseMap(g_Tilesets, g_MapTileLayers, g_ObjectGroups, "data/MAP/level-0.tmx");
@@ -124,6 +129,26 @@ HRESULT InitField(void)
 	g_Field.pos = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	g_Field.rot = XMFLOAT3(0.0f, 0.0f, 0.0f);
 	g_Field.scl = XMFLOAT3(0.045f, 0.045f, 0.045f);
+
+	LIGHT* light = GetLightData(2);
+	light->Enable = TRUE;
+	light->Diffuse = { 0.9f, 0.5f, 0.0f, 1.0f };
+	light->Attenuation = 50.0f;
+	light->Position = { 240.0f, 25.0f, 43.0f };
+	light->Ambient = { 0.2f, 0.2f, 0.2f, 1.0f };
+	light->Type = LIGHT_TYPE_POINT;
+	light->CastShadows = FALSE;
+	SetLightData(2, light);
+
+	light = GetLightData(3);
+	light->Enable = TRUE;
+	light->Attenuation = 50.0f;
+	light->Diffuse = { 0.9f, 0.5f, 0.0f, 1.0f };
+	light->Position = { 348.0f, 25.0f, 43.0f };
+	light->Ambient = { 0.2f, 0.2f, 0.2f, 1.0f };
+	light->Type = LIGHT_TYPE_POINT;
+	light->CastShadows = FALSE;
+	SetLightData(3, light);
 
 	g_TexNo = 0;
 
@@ -159,10 +184,16 @@ void UninitField(void)
 	UnloadModel(&g_Field.fieldPillarCornersModel);
 	UnloadModel(&g_Field.fieldWallDoorsModel);
 	UnloadModel(&g_Field.fieldWallGroundModel);
+	UnloadModel(&g_Field.fieldWallCeilingModel);
 	UnloadModel(&g_Field.fieldWallProps1Model);
 	UnloadModel(&g_Field.fieldWallProps2Model);
 	UnloadModel(&g_Field.fieldWallProps3Model);
 	UnloadModel(&g_Field.fieldWallProps4Model);
+	UnloadModel(&g_Field.fieldWallTorchesModel);
+
+	LIGHT* light = GetLightData(2);
+	light->Enable = FALSE;
+	SetLightData(2, light);
 
 	g_Field.load = FALSE;
 
@@ -259,10 +290,13 @@ void DrawField(void)
 	DrawModel(&g_Field.fieldPillarCornersModel);
 	DrawModel(&g_Field.fieldWallDoorsModel);
 	DrawModel(&g_Field.fieldWallGroundModel);
+	DrawModel(&g_Field.fieldWallCeilingModel);
 	DrawModel(&g_Field.fieldWallProps1Model);
 	DrawModel(&g_Field.fieldWallProps2Model);
 	DrawModel(&g_Field.fieldWallProps3Model);
 	DrawModel(&g_Field.fieldWallProps4Model);
+	DrawModel(&g_Field.fieldWallTorchesModel);
+	
 
 	// 壁の当たり判定の表示
 	if (!MAP_DRAW_DEBUG_WALLS)
