@@ -92,6 +92,13 @@ cbuffer LighProjectionBuffer : register(b9)
     matrix LightProjectionMatrix;
 }
 
+// 縁取り用バッファ
+cbuffer ShadowSettings : register(b10)
+{
+    int ShadowsEnabled;
+    int ShadowSettingsDummy[3];
+};
+
 
 //=============================================================================
 // 頂点シェーダ
@@ -243,22 +250,26 @@ void PixelShaderPolygon( in  float4 inPosition		: SV_POSITION,
                         renderPixel = 0;
 						
 						// 投影されたテクスチャ座標を計算します。
-                        projectTexCoord.x = inLightViewPos.x / inLightViewPos.w / 2.0f + 0.5f;
-                        projectTexCoord.y = -inLightViewPos.y / inLightViewPos.w / 2.0f + 0.5f;
-						
+                        inLightViewPos.xyz /= inLightViewPos.w;
+                        //projectTexCoord.x = inLightViewPos.x / inLightViewPos.w / 2.0f + 0.5f;
+                        //projectTexCoord.y = -inLightViewPos.y / inLightViewPos.w / 2.0f + 0.5f;
+                        projectTexCoord = (float2)inLightViewPos * float2(0.5f, -0.5f);
+                        projectTexCoord += float2(0.5f, 0.5f);
+                        
+                        
                         if ((saturate(projectTexCoord.x) == projectTexCoord.x) && (saturate(projectTexCoord.y) == projectTexCoord.y))
                         {
 							// 投影されたテクスチャ座標位置でサンプラーを使用して、深度テクスチャからシャドウ マップの深度値をサンプリングします。
                             depthValue = g_DepthTexture.Sample(g_SamplerStateClamp, projectTexCoord).r;
 
 							// ライトの深さを取得します。
-                            lightDepthValue = inLightViewPos.z / inLightViewPos.w;
+                            lightDepthValue = inLightViewPos.z;// / inLightViewPos.w;
 
 							// ライトの深度値からバイアスを減算します。
-                            lightDepthValue = lightDepthValue - 0.0033f;
+                            lightDepthValue = lightDepthValue - 0.005f;
 
 							// シャドウ マップ値の深さとライトの深さを比較して、このピクセルをシャドウするかライトするかを決定します。
-                            if (lightDepthValue > depthValue)
+                            if (lightDepthValue > depthValue && ShadowsEnabled == 1)
                             {
                                 tempColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
                             }

@@ -10,7 +10,7 @@
 
 #define LIGHT_VIEW_ANGLE  (XMConvertToRadians(90.0f))	
 #define LIGHT_VIEW_ASPECT ((float)SCREEN_WIDTH / (float)SCREEN_HEIGHT)
-#define LIGHT_VIEW_NEAR_Z  1.0f
+#define LIGHT_VIEW_NEAR_Z  10.0f
 #define LIGHT_VIEW_FAR_Z   100000.0f
 
 //*****************************************************************************

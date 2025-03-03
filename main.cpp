@@ -66,11 +66,15 @@ long g_MouseY = 0;
 
 int	g_Mode = MODE_TITLE;					// 起動時の画面を設定
 
+bool g_debugDepthMap = false;
+
 #ifdef _DEBUG
 int		g_CountFPS;							// FPSカウンタ
 char	g_DebugStr[2048] = WINDOW_NAME;		// デバッグ文字表示用
 
 #endif
+
+
 
 
 //=============================================================================
@@ -369,6 +373,11 @@ void Update(void)
 		ShowCursor(g_IMGUIActive);
 	}
 
+	if (GetKeyboardTrigger(DIK_P))
+	{
+		g_debugDepthMap = !g_debugDepthMap;
+	}
+
 	// モードによって処理を分ける
 	switch (g_Mode)
 	{
@@ -548,9 +557,11 @@ void Draw(void)
 
 				//SetClearColor(clearcolor);
 
-				SetDepthRenderTarget(GetDeviceContext());
-				ClearDepthRenderTarget(GetDeviceContext(), 0.0f, 0.0f, 0.0f, 0.0f);
-				
+				if (!g_debugDepthMap)
+				{
+					SetDepthRenderTarget(GetDeviceContext());
+					ClearDepthRenderTarget(GetDeviceContext(), 0.0f, 0.0f, 0.0f, 0.0f);
+				}
 				
 
 				SetLightMatrices(light);
@@ -560,10 +571,11 @@ void Draw(void)
 			}
 			else {
 
-
-				SetRenderTarget();
-				SetRenderShaders();
-
+				if (!g_debugDepthMap) 
+				{
+					SetRenderTarget();
+					SetRenderShaders();
+				}
 
 				ID3D11ShaderResourceView* depthTexture = GetDepthRendererShaderResourceView();
 
@@ -589,15 +601,25 @@ void Draw(void)
 			// 影の描画処理
 			DrawShadow();
 
-			// プレイヤーの描画処理
-			DrawPlayer();
-
 			// エネミーの描画処理
 			DrawEnemy();
 
 			//　シャドウマッピングできないもの
-			if(renderingPass <= 1)
+			if (renderingPass <= 1)
 				DrawBullet();
+			
+			//SetDepthEnable(FALSE);
+			SetShadowEnable(FALSE);
+
+			ClearStencil();
+			// プレイヤーの描画処理
+			DrawPlayer();
+
+			SetShadowEnable(TRUE);
+
+			//SetDepthEnable(TRUE);
+			
+			
 
 			renderingPass -=1;
 

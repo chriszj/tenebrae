@@ -68,6 +68,12 @@ struct FUCHI
 	int			fill[3];
 };
 
+struct SHADOWSETTINGS 
+{
+	int ShadowsEnabled;
+	int	ShadowSettingsDummy[3];
+};
+
 
 //*****************************************************************************
 // プロトタイプ宣言
@@ -100,6 +106,7 @@ static ID3D11Buffer*			g_MaterialBuffer = NULL;
 static ID3D11Buffer*			g_LightBuffer = NULL;
 static ID3D11Buffer*			g_FogBuffer = NULL;
 static ID3D11Buffer*			g_FuchiBuffer = NULL;
+static ID3D11Buffer*			g_ShadowSettingsBuffer = NULL;
 static ID3D11Buffer*			g_CameraBuffer = NULL;
 
 static ID3D11DepthStencilState* g_DepthStateEnable;
@@ -122,6 +129,8 @@ static LIGHT_CBUFFER	g_Light;
 static FOG_CBUFFER		g_Fog;
 
 static FUCHI			g_Fuchi;
+
+static SHADOWSETTINGS			g_Shadow;
 
 static float g_ClearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };	// 背景色
 
@@ -379,6 +388,11 @@ void SetFuchi(int flag)
 	GetDeviceContext()->UpdateSubresource(g_FuchiBuffer, 0, NULL, &g_Fuchi, 0, 0);
 }
 
+void SetShadowEnable(BOOL flag) {
+
+	g_Shadow.ShadowsEnabled = flag;
+	GetDeviceContext()->UpdateSubresource(g_ShadowSettingsBuffer, 0, NULL, &g_Shadow, 0, 0);
+}
 
 void SetShaderCamera(XMFLOAT3 pos)
 {
@@ -702,6 +716,11 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow)
 	g_ImmediateContext->VSSetConstantBuffers(9, 1, &g_LightProjectionBuffer);
 	g_ImmediateContext->PSSetConstantBuffers(9, 1, &g_LightProjectionBuffer);
 
+	//シャドウ設定後
+	g_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &g_ShadowSettingsBuffer);
+	g_ImmediateContext->VSSetConstantBuffers(10, 1, &g_ShadowSettingsBuffer);
+	g_ImmediateContext->PSSetConstantBuffers(10, 1, &g_ShadowSettingsBuffer);
+
 	//マテリアル情報
 	hBufferDesc.ByteWidth = sizeof(MATERIAL_CBUFFER);
 	g_D3DDevice->CreateBuffer(&hBufferDesc, NULL, &g_MaterialBuffer);
@@ -781,6 +800,7 @@ void UninitRenderer(void)
 	if (g_ProjectionBuffer)		g_ProjectionBuffer->Release();
 	if (g_LightViewBuffer)			g_LightViewBuffer->Release();
 	if (g_LightProjectionBuffer)	g_LightProjectionBuffer->Release();
+	if (g_ShadowSettingsBuffer)		g_ShadowSettingsBuffer->Release();
 	if (g_MaterialBuffer)		g_MaterialBuffer->Release();
 	if (g_LightBuffer)			g_LightBuffer->Release();
 	if (g_FogBuffer)			g_FogBuffer->Release();
@@ -806,6 +826,10 @@ void Clear(void)
 	// バックバッファクリア
 	g_ImmediateContext->ClearRenderTargetView( g_RenderTargetView, g_ClearColor );
 	g_ImmediateContext->ClearDepthStencilView( g_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
+}
+
+void ClearStencil(void) {
+	g_ImmediateContext->ClearDepthStencilView(g_DepthStencilView, D3D11_CLEAR_DEPTH, 1.0f, 0);
 }
 
 

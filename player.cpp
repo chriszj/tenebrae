@@ -88,7 +88,7 @@ HRESULT InitPlayer(void)
 	// ここでプレイヤー用の影を作成している
 	XMFLOAT3 pos = g_Player.pos;
 	pos.y -= (PLAYER_OFFSET_Y - 0.1f);
-	g_Player.shadowIdx = CreateShadow(pos, PLAYER_SHADOW_SIZE, PLAYER_SHADOW_SIZE);
+	//g_Player.shadowIdx = CreateShadow(pos, PLAYER_SHADOW_SIZE, PLAYER_SHADOW_SIZE);
 	//          ↑
 	//        このメンバー変数が生成した影のIndex番号
 	GetModelDiffuse(&g_Player.model, &g_Player.diffuse[0]);
@@ -285,7 +285,7 @@ void UpdatePlayer(void)
 	// 影もプレイヤーの位置に合わせる
 	XMFLOAT3 pos = g_Player.pos;
 	pos.y -= (PLAYER_OFFSET_Y - 0.1f);
-	SetPositionShadow(g_Player.shadowIdx, pos);
+	//SetPositionShadow(g_Player.shadowIdx, pos);
 
 
 	g_Player.spd *= 0.8f;

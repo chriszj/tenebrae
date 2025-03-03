@@ -114,6 +114,7 @@ HRESULT InitRenderer(HINSTANCE hInstance, HWND hWnd, BOOL bWindow);
 void UninitRenderer(void);
 
 void Clear(void);
+void ClearStencil(void);
 void Present(void);
 
 ID3D11Device *GetDevice( void );
@@ -143,6 +144,8 @@ void SetFog(FOG* fog);
 void DebugTextOut(char* text, int x, int y);
 
 void SetFuchi(int flag);
+void SetShadowEnable(BOOL Enable);
+
 void SetShaderCamera(XMFLOAT3 pos);
 
 void SetClearColor(float* color4);
