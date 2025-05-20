@@ -64,6 +64,8 @@ StyleCopReport.xml
 *.ilk
 *.meta
 *.obj
+# Game media folder ゲームのメディアフォルダー
+!data/**/*.obj
 *.iobj
 *.pch
 *.pdb
