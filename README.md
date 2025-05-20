@@ -30,3 +30,10 @@
 
 <img src="data/WIKI/wiki5.png" alt="Wiki5" width="700"/>
 
+## ビルド
+
+### Microsoft Visual Studio 2022 
+
+このゲームは「Visual Studio 2022 Community Edition」で作りました。
+ソリューションファイルを「Visual Studio  2022」に開けた後、ビルドして、ゲームを実行してください。
+デバッグモードで実行すると3Dモデルが多いので、モデルのロードは10秒ぐらいかかります。
