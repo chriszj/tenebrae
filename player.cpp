@@ -127,25 +127,30 @@ void UpdatePlayer(void)
 	g_Player.dir = 0;
 	// à⁄ìÆÇ≥ÇπÇøÇ·Ç§
 
-	if (GetKeyboardPress(DIK_A) || IsButtonPressed(0, BUTTON_LEFT))
+	g_Player.movY = GetPadAxis(0, LEFT_X_AXIS);
+	g_Player.movX = -GetPadAxis(0, LEFT_Y_AXIS);
+
+	g_Player.spd = sqrtf((g_Player.movX * g_Player.movX) + (g_Player.movY * g_Player.movY)) * 0.0012f;
+
+	if (GetKeyboardPress(DIK_A))
 	{	// ç∂Ç÷à⁄ìÆ
 		g_Player.spd = VALUE_MOVE;
 		//g_Player.dir -= XM_PI / 2;
 		g_Player.movY = -1;
 	}
-	if (GetKeyboardPress(DIK_D) || IsButtonPressed(0, BUTTON_RIGHT))
+	if (GetKeyboardPress(DIK_D))
 	{	// âEÇ÷à⁄ìÆ
 		g_Player.spd = VALUE_MOVE;
 		//g_Player.dir += XM_PI / 4;
 		g_Player.movY = 1;
 	}
-	if (GetKeyboardPress(DIK_W) || IsButtonPressed(0, BUTTON_UP))
+	if (GetKeyboardPress(DIK_W))
 	{	// è„Ç÷à⁄ìÆ
 		g_Player.spd = VALUE_MOVE;
 		//g_Player.dir -= XM_PI / 2;
 		g_Player.movX = 1;
 	}
-	if (GetKeyboardPress(DIK_S) || IsButtonPressed(0, BUTTON_DOWN))
+	if (GetKeyboardPress(DIK_S))
 	{	// â∫Ç÷à⁄ìÆ
 		g_Player.spd = VALUE_MOVE;
 		//g_Player.dir += (1 * XM_PI)/4;
@@ -174,6 +179,11 @@ void UpdatePlayer(void)
 	long diffX = 0;
 	long diffY = 0;
 
+	if (!IsIMGUIActive()) {
+		diffX = currentMouseX - lastMouseX;
+		diffY = currentMouseY - lastMouseY;
+	}
+
 	if (IsButtonPressed(0, BUTTON_A))
 		diffX += 8.0f;
 	if (IsButtonPressed(0, BUTTON_B))
@@ -183,10 +193,9 @@ void UpdatePlayer(void)
 	if (IsButtonPressed(0, BUTTON_Y))
 		diffY -= 8.0f;
 
-	if (!IsIMGUIActive()) {
-		diffX = currentMouseX - lastMouseX;
-		diffY = currentMouseY - lastMouseY;
-	}
+	diffX += GetPadAxis(0, RIGHT_X_AXIS) * 0.009f;
+	diffY += GetPadAxis(0, RIGHT_Y_AXIS) * 0.006f;
+
 
 	//g_Camera.rot.y += (diffX * 0.03f);
 	//g_Camera.rot.z += (diffY * 0.03f);
@@ -292,7 +301,7 @@ void UpdatePlayer(void)
 	g_Player.movX *= 0.8f;
 	g_Player.movY *= 0.8f;
 
-	if (GetKeyboardTrigger(DIK_SPACE) || IsButtonTriggered(0, BUTTON_R)) {
+	if (GetKeyboardTrigger(DIK_SPACE) || IsButtonTriggered(0, BUTTON_R) || IsMouseLeftTriggered()) {
 
 		XMFLOAT3 dir = XMFLOAT3(g_Player.viewPoint.x - g_Player.pos.x, g_Player.viewPoint.y - g_Player.pos.y, g_Player.viewPoint.z - g_Player.pos.z);
 	

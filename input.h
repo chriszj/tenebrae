@@ -46,7 +46,20 @@
 #define BUTTON_SELECT	0x00001000l	// Ｚボタン(.rgbButtons[8]&0x80)
 #define BUTTON_START	0x00002000l	// ＳＴＡＲＴボタン(.rgbButtons[9]&0x80)
 
+#define AXIS_RIGHT_RIGHT 0x00010000l
+#define AXIS_RIGHT_LEFT  0x00020000l
+#define AXIS_RIGHT_DOWN  0x00040000l
+#define AXIS_RIGHT_UP    0x00080000l
+
 #define GAMEPADMAX		4			// 同時に接続するジョイパッドの最大数をセット
+
+static enum PadAxes {
+	LEFT_X_AXIS,
+	LEFT_Y_AXIS,
+	RIGHT_X_AXIS,
+	RIGHT_Y_AXIS,
+	MAX_AXES
+};
 
 enum {	// ボタンに対するrgbButtons[?]配列の配列番号(DirectInput上でのXYABボタン位置に合わせた)
 	rgbButtons_X,
@@ -90,5 +103,5 @@ long GetMouseZ(void);               // マウスホイールが動いた相対値
 //---------------------------- game pad
 BOOL IsButtonPressed(int padNo,DWORD button);
 BOOL IsButtonTriggered(int padNo,DWORD button);
-
+LONG GetPadAxis(int padNo, PadAxes axis);
 

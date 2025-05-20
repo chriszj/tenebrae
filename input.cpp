@@ -61,6 +61,7 @@ static LPDIRECTINPUTDEVICE8	pGamePad[GAMEPADMAX] = {NULL,NULL,NULL,NULL};// パッ
 
 static DWORD	padState[GAMEPADMAX];	// パッド情報（複数対応）
 static DWORD	padTrigger[GAMEPADMAX];
+static LONG     padAxis[GAMEPADMAX][MAX_AXES];
 static int		padCount = 0;			// 検出したパッドの数
 
 
@@ -433,6 +434,12 @@ HRESULT InitializePad(void)			// パッド初期化
 		// Y軸の範囲を設定
 		diprg.diph.dwObj		= DIJOFS_Y;
 		pGamePad[i]->SetProperty(DIPROP_RANGE, &diprg.diph);
+		//右ジョイスティック
+		diprg.diph.dwObj = DIJOFS_RX;  // X軸の範囲を設定
+		pGamePad[i]->SetProperty(DIPROP_RANGE, &diprg.diph);
+
+		diprg.diph.dwObj = DIJOFS_RY;  // Y軸の範囲を設定
+		pGamePad[i]->SetProperty(DIPROP_RANGE, &diprg.diph);
 
 		// 各軸ごとに、無効のゾーン値を設定する。
 		// 無効ゾーンとは、中央からの微少なジョイスティックの動きを無視する範囲のこと。
@@ -447,6 +454,12 @@ HRESULT InitializePad(void)			// パッド初期化
 		pGamePad[i]->SetProperty( DIPROP_DEADZONE, &dipdw.diph);
 		//Y軸の無効ゾーンを設定
 		dipdw.diph.dwObj		= DIJOFS_Y;
+		pGamePad[i]->SetProperty(DIPROP_DEADZONE, &dipdw.diph);
+		//右ジョイスティック
+		dipdw.diph.dwObj = DIJOFS_RX;  //X軸の無効ゾーンを設定
+		pGamePad[i]->SetProperty(DIPROP_DEADZONE, &dipdw.diph);
+
+		dipdw.diph.dwObj = DIJOFS_RY;  //Y軸の無効ゾーンを設定
 		pGamePad[i]->SetProperty(DIPROP_DEADZONE, &dipdw.diph);
 			
 		//ジョイスティック入力制御開始
@@ -500,9 +513,11 @@ void UpdatePad(void)
 
 		// ３２の各ビットに意味を持たせ、ボタン押下に応じてビットをオンにする
 		//* y-axis (forward)
-		if ( dijs.lY < 0 )					padState[i] |= BUTTON_UP;
+		if ( dijs.lY < 0 )					
+			padState[i] |= BUTTON_UP;
 		//* y-axis (backward)
-		if ( dijs.lY > 0 )					padState[i] |= BUTTON_DOWN;
+		if ( dijs.lY > 0 )					
+			padState[i] |= BUTTON_DOWN;
 		//* x-axis (left)
 		if ( dijs.lX < 0 )					padState[i] |= BUTTON_LEFT;
 		//* x-axis (right)
@@ -528,9 +543,28 @@ void UpdatePad(void)
 		//* ＳＴＡＲＴボタン
 		if ( dijs.rgbButtons[rgbButtons_START] & 0x80 )	padState[i] |= BUTTON_START;
 
+		// 右ジョイスチック
+		if (dijs.lRy < 0)					
+			padState[i] |= AXIS_RIGHT_UP;
+
+		if (dijs.lRy > 0)
+			padState[i] |= AXIS_RIGHT_DOWN;
+
+		if (dijs.lRx < 0)					
+			padState[i] |= AXIS_RIGHT_LEFT;
+
+		if (dijs.lRx > 0)
+			padState[i] |= AXIS_RIGHT_RIGHT;
+
+
 		// Trigger設定
 		padTrigger[i] = ((lastPadState ^ padState[i])	// 前回と違っていて
 						& padState[i]);					// しかも今ONのやつ
+
+		padAxis[i][LEFT_Y_AXIS] = dijs.lY;
+		padAxis[i][LEFT_X_AXIS] = dijs.lX;
+		padAxis[i][RIGHT_Y_AXIS] = dijs.lRy;
+		padAxis[i][RIGHT_X_AXIS] = dijs.lRx;
 		
 	}
 
@@ -544,6 +578,10 @@ BOOL IsButtonPressed(int padNo,DWORD button)
 BOOL IsButtonTriggered(int padNo,DWORD button)
 {
 	return (button & padTrigger[padNo]);
+}
+
+LONG GetPadAxis(int padNo,PadAxes axis) {
+	return padAxis[padNo][axis];
 }
 
 

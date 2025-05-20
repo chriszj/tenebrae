@@ -6,6 +6,7 @@
 //=============================================================================
 #include "main.h"
 #include "collision.h"
+#include "DirectXCollision.h"
 
 
 //*****************************************************************************
@@ -68,6 +69,11 @@ BOOL CollisionBB(XMFLOAT3 objAPos, COLLIDER2DBOX objAcollider, XMFLOAT3 objBPos,
 
 	return CollisionBB(objAPos,objAcollider.width, objAcollider.height, objBPos, objBCollider.width, objBCollider.height);
 
+}
+
+BOOL CollisionOBB(BoundingOrientedBox objA, BoundingOrientedBox objB)
+{
+	return objA.Intersects(objB);
 }
 
 //=============================================================================
