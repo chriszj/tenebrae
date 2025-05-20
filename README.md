@@ -13,11 +13,20 @@
 あなたは 16 世紀にいて、修道士ウィリアムの役割を果たします。
 修道院が悪魔に侵略されています。十字架や銃を使って悪魔を倒しましょう。
 
-![Wiki1](data/WIKI/wiki1.png)
+<img src="data/WIKI/wiki1.png" alt="Wiki1" width="500"/>
 
 ## 操作説明
 
-![Wiki1](data/WIKI/wiki2.png)
+<img src="data/WIKI/wiki2.png" alt="Wiki2" width="500"/>
+<br></br>
 
-![Wiki1](data/WIKI/wiki3.png)
+<img src="data/WIKI/wiki3.png" alt="Wiki3" width="500"/>
+
+## 操作説明　キーボード
+
+<img src="data/WIKI/wiki4.png" alt="Wiki4" width="700"/>
+
+## 操作説明 ゲームパッド
+
+<img src="data/WIKI/wiki5.png" alt="Wiki5" width="700"/>
 
