@@ -49,7 +49,7 @@
 
 編集するように、まず、Wallというレイヤーを選択して、オブジェクトツールを選んで、バウンディングボックスの一つをクリックしてください。その後、好きに調整してください。
 
-<img src="data/WIKI/wiki6.png" alt="Wiki2" width="500"/>
+<img src="data/WIKI/wiki6.png" alt="Wiki2" width="900"/>
 
 バウンディングボックスの追加と削除もできます。
 
