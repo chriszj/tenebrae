@@ -19,7 +19,7 @@
 
 <img src="data/WIKI/wiki2.png" alt="Wiki2" width="500"/>
 <br></br>
-
+<br></br>
 <img src="data/WIKI/wiki3.png" alt="Wiki3" width="500"/>
 
 ## 操作説明　キーボード
