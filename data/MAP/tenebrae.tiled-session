@@ -3,27 +3,79 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "level-0.tmx",
+    "activeFile": "C:/Users/ths40760/Desktop/2025/tenebrae/data/MAP/level-0.tmx",
     "expandedProjectPaths": [
         "."
     ],
     "fileStates": {
+        "C:/Users/ths40760/Desktop/2025/tenebrae/data/MAP/level-0.tmx": {
+            "scale": 2,
+            "selectedLayer": 4,
+            "viewCenter": {
+                "x": 180.75,
+                "y": 66.75
+            }
+        },
+        "C:/Users/ths40760/Desktop/GP11/DirectX/kadai/tempus-game/data/TILEMAP/Crypt/Atlas-Props-sprites.tsx": {
+            "scaleInDock": 1
+        },
+        "C:/Users/ths40760/Desktop/GP11/DirectX/kadai/tempus-game/data/TILEMAP/Crypt/Enemies.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "C:/Users/ths40760/Desktop/GP11/DirectX/kadai/tempus-game/data/TILEMAP/Crypt/Interactables.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "C:/Users/ths40760/Desktop/GP11/DirectX/kadai/tempus-game/data/TILEMAP/Crypt/Items2.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "C:/Users/ths40760/Desktop/GP11/DirectX/kadai/tempus-game/data/TILEMAP/Crypt/Props.tsx": {
+            "dynamicWrapping": true,
+            "scaleInDock": 1
+        },
+        "C:/Users/ths40760/Desktop/GP11/DirectX/kadai/tempus-game/data/TILEMAP/Crypt/Tileset-Terrain.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
+        "C:/Users/ths40760/Desktop/GP11/DirectX/kadai/tempus-game/data/TILEMAP/Crypt/level1.tmx": {
+            "expandedObjectLayers": [
+                10,
+                9,
+                4
+            ],
+            "scale": 1.5,
+            "selectedLayer": 7,
+            "viewCenter": {
+                "x": 1727,
+                "y": 1681
+            }
+        },
+        "C:/Users/ths40760/Desktop/GP11/DirectX/kadai/tempus-game/data/TILEMAP/Crypt/wall 1.tsx": {
+            "dynamicWrapping": false,
+            "scaleInDock": 1
+        },
         "level-0.tmx": {
             "scale": 1,
             "selectedLayer": 4,
             "viewCenter": {
-                "x": 150.5,
-                "y": 234.5
+                "x": 379.5,
+                "y": 447.5
             }
         }
     },
     "map.height": 30,
     "map.lastUsedFormat": "tmx",
     "openFiles": [
-        "level-0.tmx"
+        "level-0.tmx",
+        "C:/Users/ths40760/Desktop/GP11/DirectX/kadai/tempus-game/data/TILEMAP/Crypt/level1.tmx",
+        "C:/Users/ths40760/Desktop/2025/tenebrae/data/MAP/level-0.tmx"
     ],
     "project": "tenebrae.tiled-project",
     "recentFiles": [
-        "level-0.tmx"
+        "level-0.tmx",
+        "C:/Users/ths40760/Desktop/GP11/DirectX/kadai/tempus-game/data/TILEMAP/Crypt/level1.tmx",
+        "C:/Users/ths40760/Desktop/2025/tenebrae/data/MAP/level-0.tmx"
     ]
 }
