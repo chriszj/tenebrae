@@ -63,5 +63,5 @@
 
 遊びたいだけの場合はこのリンクから実行ファイルをダウンロードできます。
 
-[Tenebrae.zip](https://drive.google.com/file/d/1OKSOcxa_eZVyrpkCpRA6H5-SA-jq9wVK/view?usp=drive_link)
+<a href="https://github.com/chriszj/tenebrae/releases/" target="_blank">ダウンロード</a>
 
